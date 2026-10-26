@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="logo-title logo-desc">
+  <title id="logo-title">نشان موقت دانشگاه شاندیز</title>
+  <desc id="logo-desc">نشان هندسی موقت و قابل تعویض؛ لوگوی رسمی دانشگاه نیست. پیش از انتشار با لوگوی رسمی جایگزین شود.</desc>
+  <g fill="none" stroke="#C9A24B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="128" cy="128" r="116" stroke-opacity="0.28" stroke-dasharray="5 9"/>
+    <path d="M72 202V113a56 56 0 0 1 112 0v89"/>
+    <path d="M54 202h148" stroke-opacity="0.75"/>
+    <path d="M128 74l13.5 32.5L174 120l-32.5 13.5L128 166l-13.5-32.5L82 120l32.5-13.5L128 74Z"/>
+    <circle cx="128" cy="120" r="7" stroke-opacity="0.7"/>
+    <path d="M92 178h72" stroke-opacity="0.35"/>
+  </g>
+</svg>

@@ -1,0 +1,21 @@
+{
+  "name": "nazra-shandiz-pwa",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "دانشگاه شاندیز | نهضت هر شب جمعه — وباپ آفلاین و RTL ایام فاطمیه",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "dev": "node scripts/serve.mjs",
+    "test": "node --test tests/*.test.js",
+    "icons": "node scripts/generate-icons.mjs",
+    "sw:version": "node scripts/bump-sw.mjs",
+    "check": "node scripts/bump-sw.mjs --check && node --test tests/*.test.js",
+    "build": "node scripts/build-static.mjs",
+    "deploy:check": "node scripts/bump-sw.mjs --check && node scripts/build-static.mjs"
+  },
+  "devDependencies": {
+    "@napi-rs/canvas": "^0.1.80",
+    "jsdom": "^26.0.0"
+  }
+}

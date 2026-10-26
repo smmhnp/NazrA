@@ -1,0 +1,22 @@
+{
+  "id": "./",
+  "name": "دانشگاه شاندیز | نهضت هر شب جمعه",
+  "short_name": "شاندیز",
+  "description": "تجربهای آفلاین، آرام و معنوی برای ایام فاطمیه؛ از تأمل در متن تا ساخت کارت و دعوت به موکب شب جمعه.",
+  "lang": "fa",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0E0F12",
+  "theme_color": "#0E0F12",
+  "categories": ["lifestyle", "education"],
+  "prefer_related_applications": false,
+  "icons": [
+    { "src": "./assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./assets/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "./assets/icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

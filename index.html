@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0E0F12">
+  <meta name="description" content="دانشگاه شاندیز | نهضت هر شب جمعه — تجربهای آفلاین، آرام و معنوی برای ایام فاطمیه">
+  <meta name="color-scheme" content="dark">
+  <title>دانشگاه شاندیز | نهضت هر شب جمعه</title>
+
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./assets/logo.svg">
+  <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="شاندیز">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="preload" href="./assets/fonts/vazirmatn/Vazirmatn-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/components.css">
+  <link rel="stylesheet" href="./css/animations.css">
+</head>
+<body>
+  <!-- نقشهٔ آیکونهای خطی تکضخامت -->
+  <svg class="svg-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M9.5 20v-6h5v6"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-science" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6L4.8 18a2 2 0 0 0 1.7 3h11a2 2 0 0 0 1.7-3L14 9V3"/><path d="M7.5 15h9"/><circle cx="11" cy="17.5" r=".8"/><circle cx="14" cy="18.5" r=".6"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6c-2.5-1.6-5.2-2-8-1.5V18c2.8-.5 5.5-.1 8 1.5 2.5-1.6 5.2-2 8-1.5V4.5c-2.8-.5-5.5-.1-8 1.5Z"/><path d="M12 6v13.5"/></symbol>
+    <symbol id="i-memory" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="15" rx="2"/><circle cx="8.5" cy="10" r="1.6"/><path d="m4 18 5-4.5 3.5 3 3-2.5L20 18"/></symbol>
+    <symbol id="i-ethics" viewBox="0 0 24 24"><path d="M12 3v18M6 7h12"/><path d="m6 7-3 6h6L6 7Zm12 0-3 6h6l-3-6Z"/><path d="M8 21h8"/></symbol>
+    <symbol id="i-pray" viewBox="0 0 24 24"><path d="M12 3c-3.2 2.4-5 5.4-5 8.6 0 3 2.2 5.4 5 5.4s5-2.4 5-5.4C17 8.4 15.2 5.4 12 3Z"/><path d="M4 20h16M8 20l1.5-3M16 20l-1.5-3"/></symbol>
+    <symbol id="i-quiz" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.6 2.6 0 0 1 5 1c0 1.8-2.5 2-2.5 4"/><circle cx="12" cy="17.5" r=".9"/></symbol>
+    <symbol id="i-postcard" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l4.5-4 3.5 3 3-2.5L21 16"/><circle cx="15.5" cy="8.5" r="1.5"/></symbol>
+    <symbol id="i-selfie" viewBox="0 0 24 24"><path d="M4 8h3l1.5-2h7L17 8h3v11H4V8Z"/><circle cx="12" cy="13" r="3.5"/><path d="M9 3h6"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v3h16v-3"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 16V4m0 0L8 8m4-4 4 4"/><path d="M5 13v6h14v-6"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 20c.5-3.2 2.5-5 5.5-5s5 1.8 5.5 5"/><path d="M16 5.5a3 3 0 0 1 0 5.8M17 15c2.4.4 3.7 2.2 4 5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4.5 4.5L19 7"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.5l3.5 2"/></symbol>
+    <symbol id="i-location" viewBox="0 0 24 24"><path d="M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+    <symbol id="i-flip" viewBox="0 0 24 24"><path d="M12 3v18M9 7 4 12l5 5V7Zm6 0 5 5-5 5V7Z"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M19 12a7 7 0 0 1-12.3 4.6L4 14m16-2-2 2M5 12a7 7 0 0 1 12.3-4.6L20 10m-16 2 2-2"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><circle cx="12" cy="8" r=".9"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.2 6.1L20.5 11l-6.3 2-2.2 6-2.2-6-6.3-2 6.3-1.9L12 3Z"/></symbol>
+  </svg>
+
+  <a class="skip-link" href="#main-content">پرش به محتوای اصلی</a>
+
+  <div class="app-shell" id="app-shell">
+    <div class="ambient-glow" aria-hidden="true"></div>
+
+    <header class="app-header" id="app-header" hidden>
+      <img class="brand-logo" data-logo src="./assets/logo.svg" alt="نشان موقت دانشگاه شاندیز" width="36" height="36">
+      <div class="brand-text">
+        <strong id="header-university">دانشگاه شاندیز</strong>
+        <small id="header-program">نهضت هر شب جمعه</small>
+      </div>
+      <button class="icon-button" type="button" data-action="home" aria-label="بازگشت به صفحهٔ آغازین">
+        <svg class="icon" aria-hidden="true"><use href="#i-home"></use></svg>
+      </button>
+    </header>
+
+    <div class="stepper" id="stepper" hidden>
+      <div class="stepper__meta">
+        <span id="stepper-label">گام ۱ از ۶</span>
+        <span id="stepper-name">آغاز</span>
+      </div>
+      <div class="stepper__track" role="progressbar" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1" aria-label="پیشرفت برنامه" id="stepper-progress">
+        <div class="stepper__fill" id="stepper-fill"></div>
+      </div>
+    </div>
+
+    <div class="offline-banner" id="offline-banner" hidden role="status">
+      <svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg>
+      <span id="offline-banner-text">در حالت آفلاین هستید؛ برنامه با منابع ذخیرهشده کار میکند.</span>
+    </div>
+
+    <main id="main-content" tabindex="-1">
+
+      <!-- ۱. خوشآمدگویی -->
+      <section class="screen" id="screen-welcome" data-screen="welcome" aria-labelledby="welcome-title">
+        <div class="welcome">
+          <div class="welcome__mark">
+            <img class="welcome__logo" data-logo src="./assets/logo.svg" alt="نشان موقت دانشگاه شاندیز" width="92" height="92">
+          </div>
+          <p class="eyebrow" id="welcome-eyebrow">ایام فاطمیه</p>
+          <h1 class="welcome__title" id="welcome-title" tabindex="-1">دانشگاه شاندیز</h1>
+          <p class="welcome__program" id="welcome-program">نهضت هر شب جمعه</p>
+          <p class="welcome__subtitle">تجربهای کوتاه، آفلاین و آرام برای همراهی با ایام فاطمیه؛ از تأمل در متن تا ساخت کارت و پیوستن به موکب شب جمعه.</p>
+
+          <div class="card welcome__goal">
+            <div class="card__head">
+              <svg class="icon" aria-hidden="true"><use href="#i-star"></use></svg>
+              <h2>هدف معنوی برنامه</h2>
+            </div>
+            <p>فرصتی برای مکث، یادآوری و همدلی؛ با متنهایی که مسئولانه و بیدلیل به کسی نسبت داده نشدهاند، و کارتهایی که میتوانید با دوستانتان شریک شوید.</p>
+          </div>
+
+          <div class="welcome__actions">
+            <button class="btn btn--primary btn--lg" type="button" data-action="start" id="start-button">
+              <span>شروع</span>
+              <svg class="icon icon--flip" aria-hidden="true"><use href="#i-chevron"></use></svg>
+            </button>
+            <button class="btn btn--secondary" type="button" data-action="resume" id="resume-button" hidden>
+              ادامهٔ مسیر قبل
+            </button>
+          </div>
+
+          <p class="welcome__footnote">بدون نیاز به اینترنت، بدون ارسال عکس یا اطلاعات به هیچ سروری.</p>
+        </div>
+      </section>
+
+      <!-- ۲. انتخاب دسته -->
+      <section class="screen" id="screen-categories" data-screen="categories" aria-labelledby="categories-title" hidden>
+        <header class="screen__head">
+          <p class="eyebrow">گام دوم</p>
+          <h1 id="categories-title" tabindex="-1">کدام فضا را انتخاب میکنید؟</h1>
+          <p class="screen__lead">یک دسته را برگزینید تا متن کوتاهی از همان دسته برایتان نمایش داده شود.</p>
+        </header>
+        <div class="category-grid" id="categories-grid" role="group" aria-label="دستههای محتوا"></div>
+        <div class="screen__actions">
+          <button class="btn btn--ghost" type="button" data-action="home">
+            <svg class="icon" aria-hidden="true"><use href="#i-chevron"></use></svg>
+            بازگشت به آغاز
+          </button>
+        </div>
+      </section>
+
+      <!-- ۳. نمایش متن -->
+      <section class="screen" id="screen-text" data-screen="text" aria-labelledby="text-title" hidden>
+        <header class="screen__head">
+          <p class="eyebrow">گام سوم</p>
+          <h1 id="text-title" tabindex="-1">متنی برای تأمل</h1>
+          <div class="row row--wrap">
+            <span class="chip chip--static" id="text-category-label">دسته</span>
+            <span class="badge" id="text-badge">نمونهٔ نیازمند تأیید منبع</span>
+          </div>
+        </header>
+
+        <article class="card text-card" id="text-card">
+          <p class="text-card__body" id="text-body" aria-live="polite" aria-atomic="true"></p>
+          <div class="text-card__source">
+            <span class="text-card__source-label">منبع</span>
+            <span id="text-source"></span>
+            <a id="text-source-link" class="inline-link" target="_blank" rel="noopener noreferrer" hidden>مشاهدهٔ منبع</a>
+          </div>
+          <p class="text-card__note" id="text-note" hidden></p>
+        </article>
+
+        <div class="screen__actions sticky-actions">
+          <button class="btn btn--primary btn--lg" type="button" data-action="to-activities">
+            <span>ادامه</span>
+            <svg class="icon icon--flip" aria-hidden="true"><use href="#i-chevron"></use></svg>
+          </button>
+          <div class="btn-row">
+            <button class="btn btn--secondary" type="button" data-action="another-text">
+              <svg class="icon" aria-hidden="true"><use href="#i-refresh"></use></svg>
+              متن دیگر
+            </button>
+            <button class="btn btn--ghost" type="button" data-action="change-category">تغییر دسته</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ۴. فعالیتها -->
+      <section class="screen" id="screen-activities" data-screen="activities" aria-labelledby="activities-title" hidden>
+        <header class="screen__head">
+          <p class="eyebrow">گام چهارم</p>
+          <h1 id="activities-title" tabindex="-1">یک فعالیت انتخاب کنید</h1>
+          <p class="screen__lead">همهٔ فعالیتها اختیاریاند؛ هر زمان خواستید میتوانید رد کنید و ادامه دهید.</p>
+        </header>
+
+        <div class="activity-list">
+          <button class="activity-card" type="button" data-action="choose-activity" data-activity="quiz">
+            <span class="activity-card__icon"><svg class="icon" aria-hidden="true"><use href="#i-quiz"></use></svg></span>
+            <span class="activity-card__text"><strong>پرسش و پاسخ</strong><small>سه پرسش چهارگزینهای کوتاه</small></span>
+            <svg class="icon activity-card__arrow icon--flip" aria-hidden="true"><use href="#i-chevron"></use></svg>
+          </button>
+          <button class="activity-card" type="button" data-action="choose-activity" data-activity="postcard">
+            <span class="activity-card__icon"><svg class="icon" aria-hidden="true"><use href="#i-postcard"></use></svg></span>
+            <span class="activity-card__text"><strong>ساخت کارتپستال</strong><small>متن منتخب، نام شما و سه قالب</small></span>
+            <svg class="icon activity-card__arrow icon--flip" aria-hidden="true"><use href="#i-chevron"></use></svg>
+          </button>
+          <button class="activity-card" type="button" data-action="choose-activity" data-activity="selfie">
+            <span class="activity-card__icon"><svg class="icon" aria-hidden="true"><use href="#i-selfie"></use></svg></span>
+            <span class="activity-card__text"><strong>ساخت سلفیکارت</strong><small>عکس، قاب و جملهای کوتاه</small></span>
+            <svg class="icon activity-card__arrow icon--flip" aria-hidden="true"><use href="#i-chevron"></use></svg>
+          </button>
+        </div>
+
+        <div class="screen__actions sticky-actions">
+          <button class="btn btn--primary btn--lg" type="button" data-action="skip-to-output">رد کردن و ادامه</button>
+          <button class="btn btn--ghost" type="button" data-action="back-to-text">بازگشت به متن</button>
+        </div>
+      </section>
+
+      <!-- ۵الف. پرسش و پاسخ -->
+      <section class="screen" id="screen-quiz" data-screen="quiz" aria-labelledby="quiz-title" hidden>
+        <header class="screen__head">
+          <p class="eyebrow">فعالیت ۱ از ۳</p>
+          <h1 id="quiz-title" tabindex="-1">پرسش و پاسخ</h1>
+          <p class="notice" id="quiz-notice">پرسشها، نمونهٔ تدوینی و غیردینی هستند.</p>
+        </header>
+
+        <div class="progress-wrap" id="quiz-progress-wrap">
+          <div class="progress__label"><span id="quiz-progress">پرسش ۱ از ۳</span><span id="quiz-progress-score">۰ پاسخ</span></div>
+          <div class="progress"><div class="progress__fill" id="quiz-progress-fill"></div></div>
+        </div>
+
+        <div id="quiz-question-panel">
+          <article class="card quiz-question">
+            <h2 class="quiz-question__text" id="quiz-question" aria-live="polite"></h2>
+            <div class="quiz-options" id="quiz-options" role="group" aria-label="گزینههای پاسخ"></div>
+          </article>
+
+          <div class="card quiz-feedback" id="quiz-feedback" hidden aria-live="polite" aria-atomic="true">
+            <strong id="quiz-feedback-title"></strong>
+            <p id="quiz-feedback-explanation"></p>
+            <p class="quiz-feedback__source"><span>منبع:</span> <span id="quiz-feedback-source"></span></p>
+            <button class="btn btn--secondary" type="button" data-ui-action="quiz-next" id="quiz-next">پرسش بعدی</button>
+          </div>
+        </div>
+
+        <div class="card quiz-result" id="quiz-result" hidden aria-live="polite">
+          <p class="eyebrow">نتیجهٔ آزمون</p>
+          <p class="quiz-result__score" id="quiz-score"></p>
+          <p class="quiz-result__message" id="quiz-message"></p>
+          <button class="btn btn--primary btn--lg" type="button" data-ui-action="quiz-make-card" id="quiz-make-card">ساخت کارت</button>
+          <button class="btn btn--secondary" type="button" data-ui-action="quiz-restart">شروع مجدد</button>
+        </div>
+
+        <div class="screen__actions sticky-actions">
+          <div class="btn-row">
+            <button class="btn btn--secondary" type="button" data-action="skip-to-output">رد کردن و ادامه</button>
+            <button class="btn btn--ghost" type="button" data-action="back-to-activities">فعالیتها</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ۵ب. کارتپستال -->
+      <section class="screen" id="screen-postcard" data-screen="postcard" aria-labelledby="postcard-title" hidden>
+        <header class="screen__head">
+          <p class="eyebrow">فعالیت ۲ از ۳</p>
+          <h1 id="postcard-title" tabindex="-1">ساخت کارتپستال</h1>
+          <p class="screen__lead">متن را ویرایش کنید، نامتان را بنویسید (اختیاری) و یکی از سه قالب را برگزینید.</p>
+        </header>
+
+        <div class="field">
+          <label for="postcard-text">متن کارت <span class="field__hint" id="postcard-count">۰/۳۰۰</span></label>
+          <textarea id="postcard-text" rows="4" maxlength="300" spellcheck="false"></textarea>
+        </div>
+        <div class="field">
+          <label for="postcard-name">نام شما <span class="field__hint">اختیاری — در صورت خالیبودن حذف میشود</span></label>
+          <input id="postcard-name" type="text" maxlength="40" autocomplete="name" placeholder="نام شما (اختیاری)">
+        </div>
+        <div class="field">
+          <span class="field__label" id="postcard-template-label">قالب کارت</span>
+          <div class="chips" id="postcard-templates" role="group" aria-labelledby="postcard-template-label"></div>
+        </div>
+
+        <div class="preview-wrap">
+          <p class="preview-wrap__label">پیشنمایش زنده <span>۴:۵</span></p>
+          <canvas id="postcard-preview" class="preview-canvas" width="540" height="675" role="img" aria-label="پیشنمایش کارتپستال"></canvas>
+        </div>
+
+        <div class="screen__actions sticky-actions">
+          <button class="btn btn--primary btn--lg" type="button" data-ui-action="postcard-make" id="postcard-make">ساخت کارت</button>
+          <div class="btn-row">
+            <button class="btn btn--secondary" type="button" data-action="back-to-activities">فعالیتها</button>
+            <button class="btn btn--ghost" type="button" data-action="skip-to-output">رد کردن و ادامه</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ۵ج. سلفیکارت -->
+      <section class="screen" id="screen-selfie" data-screen="selfie" aria-labelledby="selfie-title" hidden>
+        <header class="screen__head">
+          <p class="eyebrow">فعالیت ۳ از ۳</p>
+          <h1 id="selfie-title" tabindex="-1">ساخت سلفیکارت</h1>
+          <p class="screen__lead">عکسی بگیرید یا از گالری انتخاب کنید؛ جابهجا کنید، زوم کنید و قابی بسازید.</p>
+        </header>
+
+        <div class="field">
+          <input type="file" accept="image/*" capture="user" id="selfie-file" class="file-input">
+          <label for="selfie-file" class="btn btn--secondary btn--file" id="selfie-pick">
+            <svg class="icon" aria-hidden="true"><use href="#i-selfie"></use></svg>
+            انتخاب یا گرفتن عکس
+          </label>
+          <p class="privacy-note" id="selfie-privacy">
+            <svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg>
+            <span>عکس شما فقط روی همین دستگاه پردازش میشود و به هیچ سروری ارسال نمیشود.</span>
+          </p>
+          <p class="field__status" id="selfie-status" role="status" aria-live="polite"></p>
+        </div>
+
+        <div class="preview-wrap" id="selfie-preview-wrap">
+          <p class="preview-wrap__label">پیشنمایش زنده <span>۴:۵</span></p>
+          <div class="preview-canvas-wrap">
+            <canvas id="selfie-preview" class="preview-canvas preview-canvas--interactive" width="540" height="675" role="img" aria-label="پیشنمایش سلفیکارت؛ قابل جابهجایی و زوم"></canvas>
+            <div class="preview-empty" id="selfie-empty">
+              <svg class="icon" aria-hidden="true"><use href="#i-selfie"></use></svg>
+              <span>هنوز عکسی انتخاب نشده است</span>
+            </div>
+          </div>
+          <p class="preview-hint">کشیدن برای جابهجایی • دو انگشت یا چرخ ماوس برای زوم</p>
+        </div>
+
+        <div class="field" id="selfie-controls">
+          <label for="selfie-zoom">میزان زوم <span class="field__hint" id="selfie-zoom-value">۱×</span></label>
+          <input id="selfie-zoom" class="range" type="range" min="1" max="4" step="0.01" value="1" aria-label="میزان زوم تصویر">
+          <div class="btn-row">
+            <button class="btn btn--secondary" type="button" data-ui-action="selfie-flip" id="selfie-flip" aria-pressed="false">
+              <svg class="icon" aria-hidden="true"><use href="#i-flip"></use></svg> برگردان
+            </button>
+            <button class="btn btn--ghost" type="button" data-ui-action="selfie-reset">
+              <svg class="icon" aria-hidden="true"><use href="#i-refresh"></use></svg> بازنشانی
+            </button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="selfie-text">متن کوتاه <span class="field__hint">یک یا دو جمله</span></label>
+          <input id="selfie-text" type="text" maxlength="140" value="شب جمعه، یادشان را زنده نگه میداریم.">
+        </div>
+        <div class="field">
+          <span class="field__label" id="selfie-template-label">قالب قاب</span>
+          <div class="chips" id="selfie-templates" role="group" aria-labelledby="selfie-template-label"></div>
+        </div>
+
+        <div class="screen__actions sticky-actions">
+          <button class="btn btn--primary btn--lg" type="button" data-ui-action="selfie-make" id="selfie-make" disabled>ساخت کارت</button>
+          <div class="btn-row">
+            <button class="btn btn--secondary" type="button" data-action="back-to-activities">فعالیتها</button>
+            <button class="btn btn--ghost" type="button" data-action="skip-to-output">رد کردن و ادامه</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ۶. خروجی و اشتراکگذاری -->
+      <section class="screen" id="screen-output" data-screen="output" aria-labelledby="output-title" hidden>
+        <header class="screen__head">
+          <p class="eyebrow">گام پنجم</p>
+          <h1 id="output-title" tabindex="-1">خروجی شما</h1>
+          <p class="screen__lead">کارت ساختهشده را دانلود یا اشتراکگذاری کنید. ادامه بدون کارت نیز ممکن است.</p>
+        </header>
+
+        <div class="card output-empty" id="output-empty">
+          <svg class="icon" aria-hidden="true"><use href="#i-postcard"></use></svg>
+          <p>هنوز کارتی نساختهاید. میتوانید بدون کارت ادامه دهید یا به فعالیتها برگردید.</p>
+        </div>
+
+        <div class="output-card" id="output-card-wrap" hidden>
+          <img id="output-card-preview" alt="پیشنمایش کارت نهایی ساختهشده" width="540" height="675">
+          <p class="output-card__meta" id="output-card-meta"></p>
+        </div>
+
+        <p class="output-guide" id="output-guide" hidden></p>
+
+        <div class="screen__actions sticky-actions">
+          <div class="btn-row" id="output-card-buttons" hidden>
+            <button class="btn btn--secondary" type="button" data-action="download-card">
+              <svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg> دانلود
+            </button>
+            <button class="btn btn--secondary" type="button" data-action="share-card">
+              <svg class="icon" aria-hidden="true"><use href="#i-share"></use></svg> اشتراکگذاری
+            </button>
+          </div>
+          <button class="btn btn--primary btn--lg" type="button" data-action="go-final" id="output-continue">ادامه</button>
+          <button class="btn btn--ghost" type="button" data-action="make-another-card">ساخت کارت دیگر</button>
+        </div>
+      </section>
+
+      <!-- ۷. صفحهٔ پایانی و دعوت -->
+      <section class="screen" id="screen-final" data-screen="final" aria-labelledby="final-title" hidden>
+        <header class="screen__head screen__head--center">
+          <p class="eyebrow">گام ششم</p>
+          <h1 id="final-title" tabindex="-1">تا دیداری دیگر</h1>
+          <p class="final-message" id="final-message">هر شب جمعه، فرصتی تازه برای به یاد آوردن، همدلی و کنار هم بودن است. این تجربهٔ کوتاه را با دلی آرام به پایان ببرید.</p>
+        </header>
+
+        <div class="card countdown-card">
+          <div class="card__head">
+            <svg class="icon" aria-hidden="true"><use href="#i-clock"></use></svg>
+            <h2 id="countdown-title">تا شب جمعهٔ بعدی</h2>
+          </div>
+          <div class="countdown-grid" id="countdown-grid" hidden>
+            <div class="countdown-cell"><strong id="cd-days">۰</strong><span>روز</span></div>
+            <div class="countdown-cell"><strong id="cd-hours">۰</strong><span>ساعت</span></div>
+            <div class="countdown-cell"><strong id="cd-minutes">۰</strong><span>دقیقه</span></div>
+            <div class="countdown-cell"><strong id="cd-seconds">۰</strong><span>ثانیه</span></div>
+          </div>
+          <p class="countdown-message" id="countdown-message" role="status">زمان برگزاری بهزودی اعلام میشود</p>
+          <p class="countdown-date" id="countdown-date" hidden></p>
+        </div>
+
+        <div class="card mokab-card">
+          <div class="card__head">
+            <svg class="icon" aria-hidden="true"><use href="#i-star"></use></svg>
+            <h2 id="mokab-title">موکب شب جمعه</h2>
+          </div>
+          <ul class="detail-list">
+            <li><svg class="icon" aria-hidden="true"><use href="#i-location"></use></svg><span id="mokab-address">آدرس دقیق موکب بهزودی اعلام میشود.</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="#i-clock"></use></svg><span id="mokab-time">ساعت برگزاری بهزودی اعلام میشود.</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg><span id="mokab-timezone">منطقهٔ زمانی: Asia/Tehran</span></li>
+          </ul>
+          <button class="btn btn--primary btn--lg" type="button" data-action="toggle-coming" id="coming-button" aria-pressed="false">
+            <svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg>
+            <span id="coming-label">میآیم</span>
+          </button>
+          <p class="mokab-note" id="coming-note">این فقط نشانگر شخصی روی دستگاه شماست؛ ثبتنام یا اعلام حضور به برگزارکنندگان انجام نمیشود.</p>
+        </div>
+
+        <div class="card invite-card">
+          <div class="card__head">
+            <svg class="icon" aria-hidden="true"><use href="#i-users"></use></svg>
+            <h2>دعوت از یک دوست</h2>
+          </div>
+          <button class="btn btn--secondary btn--lg" type="button" data-action="invite-friend" id="invite-button">
+            <svg class="icon" aria-hidden="true"><use href="#i-share"></use></svg> دعوت از یک دوست
+          </button>
+          <div class="invite-fallback" id="invite-fallback" hidden>
+            <label for="invite-text-preview">متن دعوت</label>
+            <textarea id="invite-text-preview" rows="4" readonly></textarea>
+            <button class="btn btn--ghost" type="button" data-action="copy-invite-text">کپی متن دعوت</button>
+            <label for="invite-link">لینک وباپ</label>
+            <input id="invite-link" type="text" readonly>
+            <button class="btn btn--ghost" type="button" data-action="copy-invite-link">کپی لینک</button>
+          </div>
+        </div>
+
+        <div class="screen__actions">
+          <button class="btn btn--secondary btn--lg" type="button" data-action="restart">بازگشت به ابتدای برنامه</button>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="false"></div>
+    <div class="sr-only" id="sr-status" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <div class="fatal-panel" id="fatal-error" hidden role="alertdialog" aria-labelledby="fatal-title" aria-describedby="fatal-desc">
+      <div class="card">
+        <h2 id="fatal-title">خطای غیرمنتظره</h2>
+        <p id="fatal-desc">خطایی رخ داد. میتوانید دوباره تلاش کنید یا به آغاز برنامه برگردید.</p>
+        <button class="btn btn--primary" type="button" data-action="home" id="fatal-home">بازگشت به آغاز</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
