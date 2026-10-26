@@ -21,14 +21,14 @@ test("مؤلفههای محلی Asia/Tehran درست محاسبه میشود", (
   assert.equal(parts.hour, 15);
   assert.equal(parts.minute, 30);
   assert.equal(parts.day, 26);
-  assert.equal(parts.weekday, 1); // دوشنبه
+  assert.equal(parts.weekday, 1); // Monday
 });
 
 test("شب جمعهٔ بعدی از تنظیمات خوانده میشود", () => {
   const schedule = { timeZone: "Asia/Tehran", eventTime: "20:00", eventDayOfWeek: 4 };
-  const next = getNextEvent(new Date("2026-10-26T12:00:00Z"), schedule); // دوشنبه
+  const next = getNextEvent(new Date("2026-10-26T12:00:00Z"), schedule); // Monday
   assert.ok(next);
-  assert.equal(next.instant.toISOString(), "2026-10-29T16:30:00.000Z"); // پنجشنبه ۲۰:۰۰ تهران
+  assert.equal(next.instant.toISOString(), "2026-10-29T16:30:00.000Z"); // Thursday 20:00 Tehran
   assert.equal(getZonedParts(next.instant, "Asia/Tehran").weekday, 4);
 });
 
@@ -46,13 +46,13 @@ test("ساعت تأییدنشده یا منطقهٔ نامعتبر، شمارش 
 });
 
 test("تغییر ساعت تابستانی (DST) باعث خطا نمیشود", () => {
-  // آمریکا/نیویورک: ۸ مارس ۲۰۲۶ ساعت ۲:۳۰ وجود ندارد (جهش بهاره).
+  // America/New_York: 2026-03-08 02:30 does not exist (spring gap).
   const spring = zonedTimeToUtc({ year: 2026, month: 3, day: 8, hour: 2, minute: 30 }, "America/New_York");
   assert.equal(spring.toISOString(), "2026-03-08T07:00:00.000Z");
-  // ۱ نوامبر ۲۰۲۶ ساعت ۱:۳۰ دوبار رخ میدهد؛ نخستین رخداد انتخاب شود.
+  // 2026-11-01 01:30 occurs twice; expect the first occurrence.
   const fall = zonedTimeToUtc({ year: 2026, month: 11, day: 1, hour: 1, minute: 30 }, "America/New_York");
   assert.ok(["2026-11-01T05:30:00.000Z", "2026-11-01T06:30:00.000Z"].includes(fall.toISOString()));
-  // ساعت معمولی همچنان دقیق است.
+  // Regular times stay exact.
   assert.equal(zonedTimeToUtc({ year: 2026, month: 6, day: 15, hour: 20, minute: 0 }, "America/New_York").toISOString(), "2026-06-16T00:00:00.000Z");
 });
 

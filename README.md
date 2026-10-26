@@ -194,7 +194,7 @@ Apache/Nginx، S3+CloudFront و…) قرار دهید. فقط الزامی اس�
   category: "scientific",
   text: "TODO — ...",
   source: "TODO — منبع دقیق و قابل بررسی",
-  sourceUrl: null,          // فقط http(s) معتبر پذیرفته میشود
+  sourceUrl: null,          // Only valid http(s) or null
   verified: false,
   sourceType: "placeholder" // placeholder | editorial | app-doc | sourced
 }
@@ -206,8 +206,8 @@ Apache/Nginx، S3+CloudFront و…) قرار دهید. فقط الزامی اس�
 ```js
 sourced("prayer", 1,
   "متن دقیق …",
-  "نام کتاب، ناشر، جلد/صفحه",   // منبع دقیق و قابل بررسی
-  "https://example.org/book"    // یا null
+  "نام کتاب، ناشر، جلد/صفحه",   // Exact, verifiable source
+  "https://example.org/book"    // Or null
 )
 ```
 

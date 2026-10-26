@@ -37,7 +37,7 @@ test("ابعاد و نسبت خروجی ثابتاند", () => {
   assert.equal(CARD_TEMPLATE_IDS.length, 3);
 });
 
-/** ctx سادهای که عرض واقعی را شبیهسازی میکند (بدون وابستگی). */
+/** Minimal ctx that simulates measured text width. */
 function mockCtx() {
   return {
     font: "600 40px sans-serif",

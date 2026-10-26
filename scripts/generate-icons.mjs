@@ -1,18 +1,4 @@
-/**
- * generate-icons.mjs — آمادهسازی لوگوی رسمی و تولید آیکونهای PWA.
- *
- * ورودی: assets/logo-source.png (فایل اصلی ارائهشده توسط دانشگاه؛ نشان سفید روی مشکی)
- * خروجی:
- *   assets/logo.png                  نشان با پسزمینهٔ شفاف و رنگ کرم (مناسب تم تیره)
- *   assets/icons/icon-192.png       آیکون نصب ۱۹۲
- *   assets/icons/icon-512.png       آیکون نصب ۵۱۲
- *   assets/icons/icon-maskable-512  آیکون maskable با ناحیهٔ امن
- *   assets/icons/apple-touch-icon   آیکون ۱۸۰ برای iOS
- *   assets/icons/icon.svg           همان آیکون ۵۱۲ در قالب SVG (base64 داخلی)
- *
- * فقط به @napi-rs/canvas (وابستگی توسعه) نیاز دارد؛ هیچ سرویس خارجی استفاده نمیشود.
- * اجرا: npm run icons
- */
+/** Prepare the official logo and generate PWA icons (npm run icons). */
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -39,7 +25,7 @@ const CREAM = [237, 232, 220]; // --text-primary
 const GOLD = [201, 162, 75];   // --gold
 const BG = "#0E0F12";
 
-/** تبدیل نشان سفیدرویمشکی به نشان رنگی با پسزمینهٔ شفاف. */
+/** Turn the white-on-black mark into a transparent tinted logo. */
 async function buildTransparentLogo() {
   const source = await loadImage(sourcePath);
   const width = 800;
@@ -51,7 +37,7 @@ async function buildTransparentLogo() {
   const data = image.data;
   for (let i = 0; i < data.length; i += 4) {
     const r = data[i], g = data[i + 1], b = data[i + 2], a = data[i + 3];
-    // چون پسزمینه مشکی و نشان سفید است، روشنایی = میزان پوشش نشان.
+    // With a black background and white mark, luminance equals coverage.
     const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
     data[i] = CREAM[0];
     data[i + 1] = CREAM[1];
@@ -63,7 +49,7 @@ async function buildTransparentLogo() {
   return await loadImage(logoPath);
 }
 
-/** رنگآمیزی مجدد نشان شفاف با حفظ آلفا. */
+/** Recolor the transparent mark while preserving alpha. */
 function tintedMark(logo, color, width, height) {
   const mark = createCanvas(Math.ceil(width), Math.ceil(height));
   const ctx = mark.getContext("2d");
@@ -78,7 +64,7 @@ function drawIcon(ctx, size, logo, maskable = false) {
   ctx.fillStyle = BG;
   ctx.fillRect(0, 0, size, size);
 
-  // بافت هندسی بسیار کمرنگ
+  // Very faint geometric texture.
   ctx.save();
   ctx.strokeStyle = "rgba(201,162,75,0.05)";
   ctx.lineWidth = Math.max(1, size * 0.002);
@@ -94,7 +80,7 @@ function drawIcon(ctx, size, logo, maskable = false) {
   }
   ctx.restore();
 
-  // ناحیهٔ امن: در maskable نشان کوچکتر میماند تا برش دایرهای آن را نبرد.
+  // Safe zone: keep the maskable mark smaller to survive circular crops.
   const box = size * (maskable ? 0.62 : 0.78);
   const scale = Math.min(box / logo.width, box / logo.height);
   const w = logo.width * scale;
@@ -123,7 +109,7 @@ for (const target of targets) {
   console.log(`✓ ${target.name} (${target.size}×${target.size})`);
 }
 
-// نسخهٔ SVG همان آیکون ۵۱۲ (برای manifest و favicon وکتورنما)
+// SVG version of the 512 icon for the manifest and favicon.
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" viewBox="0 0 512 512">
   <title>نشان موسسه آموزش عالی شاندیز</title>
   <image width="512" height="512" href="data:image/png;base64,${icon512.toString("base64")}"/>

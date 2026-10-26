@@ -1,7 +1,4 @@
-/**
- * share.js — اشتراکگذاری و دانلود بدون سرور.
- * تمام وابستگیهای مرورگری قابل تزریقاند تا در محیط تست هم بررسی شوند.
- */
+/** Serverless sharing/download; browser deps are injectable for tests. */
 import { isTodo } from "./utils.js";
 
 export function isValidEmail(email) {
@@ -11,7 +8,7 @@ export function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
 }
 
-/** ساخت لینک mailto با رمزگذاری کامل عنوان و متن. */
+/** Build a mailto link with fully encoded subject and body. */
 export function buildMailto({ email, subject, body } = {}) {
   if (!isValidEmail(email)) return null;
   return `mailto:${email.trim()}?subject=${encodeURIComponent(String(subject ?? ""))}&body=${encodeURIComponent(String(body ?? ""))}`;
@@ -22,7 +19,7 @@ export function buildFileName(prefix = "nazra-card") {
   return `${prefix}-${stamp}.png`;
 }
 
-/** دانلود محلی Blob — هیچ درخواست شبکهای ایجاد نمیکند. */
+/** Download a Blob locally; creates no network request. */
 export function defaultDownload(blob, fileName) {
   try {
     if (typeof document === "undefined" || typeof URL === "undefined" || !URL.createObjectURL) return false;
@@ -43,7 +40,7 @@ export function defaultDownload(blob, fileName) {
 }
 
 function defaultOpenLink(url) {
-  // کلیک روی <a> کمتر از تغییر location باعث خروج از صفحهٔ PWA میشود.
+  // Clicking an anchor is less disruptive to the PWA than assigning location.
   try {
     if (typeof document !== "undefined" && typeof document.createElement === "function") {
       const anchor = document.createElement("a");
@@ -55,7 +52,7 @@ function defaultOpenLink(url) {
       anchor.remove();
       return true;
     }
-  } catch { /* به روش قدیمی میرویم */ }
+  } catch { /* Fall through to the legacy method. */ }
   try {
     if (typeof window !== "undefined" && typeof window.location?.assign === "function") {
       window.location.assign(url);
@@ -74,12 +71,7 @@ function makeFile(blob, fileName) {
   }
 }
 
-/**
- * ترتیب: تولید PNG (توسط فراخوان) → canShare({files}) → share({files}) →
- * در غیر اینصورت دانلود → mailto (اگر ایمیل معتبر باشد) → راهنما.
- *
- * @returns {Promise<{outcome: string, guide: string, downloaded: boolean}>}
- */
+/** Order: canShare(files) -> share -> download -> mailto -> guide. */
 export async function shareOrDownload({
   blob,
   fileName = "nazra-card.png",
@@ -108,7 +100,7 @@ export async function shareOrDownload({
         if (error?.name === "AbortError") {
           return { outcome: "cancelled", guide: "", downloaded: false };
         }
-        // خطای واقعی اشتراکگذاری → مسیر جایگزین دانلود ادامه مییابد.
+        // A real share error falls through to the download path.
         return fallbackDownload({ error, wasError: true });
       }
     }
@@ -132,7 +124,7 @@ export async function shareOrDownload({
   }
 }
 
-/** کپی متن با پشتیبانی از Clipboard API و fallback قدیمی. */
+/** Copy text via the Clipboard API with a legacy fallback. */
 export async function copyText(text, { navigator: nav = globalThis.navigator, document: doc = globalThis.document } = {}) {
   const value = String(text ?? "");
   if (!value) return false;
@@ -141,7 +133,7 @@ export async function copyText(text, { navigator: nav = globalThis.navigator, do
       await nav.clipboard.writeText(value);
       return true;
     }
-  } catch { /* به روش قدیمی میرویم */ }
+  } catch { /* Fall through to the legacy method. */ }
   try {
     if (!doc?.body || !doc.createElement) return false;
     const area = doc.createElement("textarea");
@@ -159,7 +151,7 @@ export async function copyText(text, { navigator: nav = globalThis.navigator, do
   }
 }
 
-/** نشانی معتبر همین وباپ (بدون پارامتر و هش) — مناسب Pages زیرمسیر. */
+/** Canonical app URL without query/hash (works under Pages subpaths). */
 export function getAppUrl(locationLike = globalThis.location) {
   try {
     if (!locationLike?.href) return "";
@@ -172,7 +164,7 @@ export function getAppUrl(locationLike = globalThis.location) {
   }
 }
 
-/** دعوت از دوست: Web Share API، وگرنه نمایش گزینهٔ کپی. */
+/** Invite a friend via Web Share, or show copy options. */
 export async function inviteFriend({
   title = "", text = "", url = "",
   navigator: nav = globalThis.navigator,
@@ -186,7 +178,7 @@ export async function inviteFriend({
       return { outcome: "shared" };
     } catch (error) {
       if (error?.name === "AbortError") return { outcome: "cancelled" };
-      // خطای دیگر → جایگزین کپی.
+      // Other errors fall back to copy.
     }
   }
   onFallback();

@@ -1,7 +1,4 @@
-/**
- * flow.test.js — تست یکپارچهٔ مسیر کاربر با jsdom و Canvas واقعی.
- * اگر وابستگیهای توسعه نصب نباشند، تست رد نمیشود (skip).
- */
+/** End-to-end user flow with jsdom and a real Canvas. */
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -87,11 +84,11 @@ test("مسیر کامل کاربر: آغاز → پنج دسته → متن → 
   };
   const action = (name) => $(`[data-action="${name}"]`);
 
-  // app.js را بعد از آمادهسازی DOM و سراسریها بارگذاری میکنیم.
+  // Load app.js after the DOM and globals are ready.
   await import(`../js/app.js?flow=${Date.now()}`);
   const { CATEGORIES, TEXT_RECORDS, QUESTION_RECORDS } = await import("../js/content.js");
 
-  // ۱. خوشآمدگویی
+  // 1. Welcome
   assert.equal(visible("welcome"), true);
   assert.equal(visible("categories"), false);
   assert.equal($("#welcome-title").textContent, "موسسه آموزش عالی شاندیز");
@@ -101,7 +98,7 @@ test("مسیر کامل کاربر: آغاز → پنج دسته → متن → 
   assert.equal(visible("categories"), true);
   assert.equal($$("#categories-grid .category-card").length, 5);
 
-  // ۲. همهٔ پنج دسته
+  // 2. All five categories
   for (const category of CATEGORIES) {
     click($(`[data-category-id="${category.id}"]`));
     assert.equal(visible("text"), true, `دستهٔ ${category.id}`);
@@ -114,7 +111,7 @@ test("مسیر کامل کاربر: آغاز → پنج دسته → متن → 
     assert.equal(visible("categories"), true);
   }
 
-  // ۳. «متن دیگر» متن فعلی را بلافاصله تکرار نمیکند
+  // 3. Another text never repeats the current one
   click($('[data-category-id="scientific"]'));
   let previous = $("#text-body").textContent;
   for (let i = 0; i < 12; i += 1) {
@@ -125,13 +122,13 @@ test("مسیر کامل کاربر: آغاز → پنج دسته → متن → 
     previous = current;
   }
 
-  // ۴. فعالیتها و دکمهٔ همیشهدردسترس «رد کردن و ادامه»
+  // 4. Activities and the always-available skip button
   click(action("to-activities"));
   assert.equal(visible("activities"), true);
   assert.equal($$('#screen-activities [data-action="skip-to-output"]').length, 1);
   assert.equal($$('[data-action="choose-activity"]').length, 3);
 
-  // ۵. آزمون: سه پرسش، چهار گزینه، امتیاز از روی دادهها
+  // 5. Quiz: three questions, four options, data-driven score
   click($('[data-activity="quiz"]'));
   assert.equal(visible("quiz"), true);
   assert.equal($$('#screen-quiz [data-action="skip-to-output"]').length, 1);
@@ -150,7 +147,7 @@ test("مسیر کامل کاربر: آغاز → پنج دسته → متن → 
   assert.equal($("#quiz-result").hidden, false);
   assert.ok($("#quiz-score").textContent.includes("۳ از ۳"), `امتیاز: ${$("#quiz-score").textContent}`);
 
-  // ۶. ساخت کارت آزمون و رسیدن به خروجی
+  // 6. Build the quiz card and reach the output
   click($("#quiz-make-card"));
   await waitFor(() => visible("output"));
   assert.equal($("#output-empty").hidden, true);
@@ -158,7 +155,7 @@ test("مسیر کامل کاربر: آغاز → پنج دسته → متن → 
   assert.ok($("#output-card-meta").textContent.includes("۱۰۸۰×۱۳۵۰"));
   assert.ok($("#output-card-preview").getAttribute("src"));
 
-  // ۷. کارتپستال: سه قالب، نام اختیاری، پیشنمایش و ساخت
+  // 7. Postcard: three templates, optional name, preview, build
   click(action("make-another-card"));
   click($('[data-activity="postcard"]'));
   assert.equal(visible("postcard"), true);
@@ -173,7 +170,7 @@ test("مسیر کامل کاربر: آغاز → پنج دسته → متن → 
   click($("#postcard-make"));
   await waitFor(() => visible("output"));
 
-  // ۸. سلفیکارت: بدون عکس، دکمهٔ ساخت غیرفعال ولی خروج آزاد است
+  // 8. Selfie card: build is disabled without a photo, skipping still works
   click(action("make-another-card"));
   click($('[data-activity="selfie"]'));
   assert.equal(visible("selfie"), true);
@@ -187,7 +184,7 @@ test("مسیر کامل کاربر: آغاز → پنج دسته → متن → 
   assert.equal($("#selfie-flip").getAttribute("aria-pressed"), "false");
   assert.equal($$('#screen-selfie [data-action="skip-to-output"]').length, 1);
 
-  // بارگذاری عکس محلی (شبیهسازی createImageBitmap بدون هیچ درخواست شبکهای)
+  // Load a local photo (simulate createImageBitmap, no network request)
   const sourceCanvas = createCanvas(600, 800);
   const sctx = sourceCanvas.getContext("2d");
   sctx.fillStyle = "#3A4A5A"; sctx.fillRect(0, 0, 600, 800);
@@ -203,7 +200,7 @@ test("مسیر کامل کاربر: آغاز → پنج دسته → متن → 
   assert.ok($("#selfie-status").textContent.length > 3);
   assert.equal($("#selfie-empty").hidden, true);
 
-  // زوم با چرخ ماوس و جابهجایی با اشارهگر
+  // Wheel zoom and pointer panning
   const preview = $("#selfie-preview");
   preview.dispatchEvent(new window.WheelEvent("wheel", { deltaY: -300, bubbles: true, cancelable: true }));
   assert.ok(Number($("#selfie-zoom").value) > 1, "زوم با چرخ ماوس");
@@ -222,7 +219,7 @@ test("مسیر کامل کاربر: آغاز → پنج دسته → متن → 
   assert.equal($("#output-empty").hidden, true);
   assert.ok($("#output-card-preview").getAttribute("src"));
 
-  // دانلود و اشتراکگذاری (مسیر پشتیبانی / عدم پشتیبانی) بدون خطا
+  // Download and share (supported/unsupported paths) without errors
   click(action("download-card"));
   const fakeNavigator = {
     onLine: true,
@@ -237,12 +234,12 @@ test("مسیر کامل کاربر: آغاز → پنج دسته → متن → 
 
   click($('#screen-output [data-action="go-final"]'));
 
-  // ۹. رد کردن مستقیم از فعالیتها و بازگشت به خروجی
+  // 9. Skip directly from activities and return to the output
   click(action("home"));
   click($('#screen-welcome [data-action="resume"]'));
   assert.equal(visible("final"), true, "ادامهٔ مسیر قبل");
 
-  // ۱۰. صفحهٔ پایانی: تنظیمات TODO و نبود سکشنهای حذفشده
+  // 10. Final screen: TODO settings and removed sections
   assert.equal(visible("final"), true);
   assert.ok($("#mokab-address").textContent.includes("بهزودی"));
   assert.ok($("#mokab-time").textContent.includes("بهزودی"));
@@ -256,19 +253,19 @@ test("مسیر کامل کاربر: آغاز → پنج دسته → متن → 
   const stored = JSON.parse(window.localStorage.getItem("nazra.state.v1"));
   assert.equal(stored.step, "final");
 
-  // دعوت از دوست: مسیر جایگزین کپی (مرورگری بدون Web Share API)
+  // Invite a friend: copy fallback (browser without Web Share API)
   setGlobal("navigator", { onLine: true, clipboard: { writeText: async () => {} } });
   click(action("invite-friend"));
   await waitFor(() => !$("#invite-fallback").hidden);
   assert.ok($("#invite-link").value === "https://example.test/NazrA/");
   assert.ok($("#invite-text-preview").value.includes("https://example.test/NazrA/"));
 
-  // بازگشت به ابتدا
+  // Restart
   click(action("restart"));
   assert.equal(visible("welcome"), true);
   assert.equal($("#resume-button").hidden, true);
 
-  // هیچ خطای JavaScript یا خطای DOM رخ نداده است.
+  // No JavaScript or DOM errors occurred.
   const realErrors = jsdomErrors.filter((message) => !/Not implemented|Could not parse CSS|navigation/i.test(message));
   assert.deepEqual(realErrors, []);
   assert.deepEqual(consoleErrors, []);

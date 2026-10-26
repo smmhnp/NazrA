@@ -1,8 +1,4 @@
-/**
- * app.js — مسیریاب، وضعیت و هماهنگی کل برنامه.
- * ترتیب: خوشآمد → دستهها → متن → فعالیتها → (آزمون/کارتپستال/سلفی) → خروجی → پایان.
- * هیچ اطلاعاتی به سرور ارسال نمیشود؛ همهچیز محلی است.
- */
+/** Router, state and screen wiring; all data stays local. */
 import { CONFIG } from "./config.js";
 import {
   CATEGORIES, TEXT_RECORDS, QUESTION_RECORDS, CARD_TEMPLATES, COPY, QUIZ_MESSAGES
@@ -61,7 +57,7 @@ const runtime = {
 function setState(patch) { S = store.save(patch); return S; }
 
 /* ------------------------------------------------------------------ */
-/* اجزای مشترک                                                        */
+/* Shared helpers */
 /* ------------------------------------------------------------------ */
 
 function setCard(result, options = {}) {
@@ -111,7 +107,7 @@ async function makeCard(options, button) {
 }
 
 /* ------------------------------------------------------------------ */
-/* ماژولهای فعالیت                                                    */
+/* Activity controllers */
 /* ------------------------------------------------------------------ */
 
 const quizUI = createQuizUI({
@@ -152,7 +148,7 @@ const selfieUI = createSelfieUI({
 const activityModules = { quiz: quizUI, postcard: postcardUI, selfie: selfieUI };
 
 /* ------------------------------------------------------------------ */
-/* مسیریابی                                                           */
+/* Routing */
 /* ------------------------------------------------------------------ */
 
 function showScreen(name, { persist = true, focus = true } = {}) {
@@ -163,7 +159,7 @@ function showScreen(name, { persist = true, focus = true } = {}) {
   $$(".screen").forEach((section) => { section.hidden = section.dataset.screen !== name; });
   const target = $(`#screen-${name}`);
   target?.classList.remove("is-entering");
-  // اجبار به reflow تا انیمیشن هر بار اجرا شود.
+  // Force reflow so the animation replays.
   void target?.offsetWidth;
   target?.classList.add("is-entering");
   runtime.currentScreen = name;
@@ -185,7 +181,7 @@ function showScreen(name, { persist = true, focus = true } = {}) {
   else if (name === "output") renderOutput();
   else if (name === "final") renderFinal();
   else if (name === "welcome") updateResumeButton();
-  if (name === "activities") { /* هیچ پیشنیازی لازم نیست */ }
+  if (name === "activities") { /* No prerequisites needed. */ }
 
   try { window.scrollTo(0, 0); } catch { /*noop*/ }
   if (focus) {
@@ -211,7 +207,7 @@ function resumeFlow() {
 }
 
 /* ------------------------------------------------------------------ */
-/* دستهها و متنها                                                     */
+/* Categories and texts */
 /* ------------------------------------------------------------------ */
 
 function renderCategories() {
@@ -305,7 +301,7 @@ function pickNewText(reset = false) {
 }
 
 /* ------------------------------------------------------------------ */
-/* آزمون                                                              */
+/* Quiz */
 /* ------------------------------------------------------------------ */
 
 function initQuizSession() {
@@ -317,7 +313,7 @@ function initQuizSession() {
 }
 
 /* ------------------------------------------------------------------ */
-/* خروجی                                                              */
+/* Output */
 /* ------------------------------------------------------------------ */
 
 function renderOutput() {
@@ -380,7 +376,7 @@ async function shareCard(button) {
 }
 
 /* ------------------------------------------------------------------ */
-/* صفحهٔ پایانی و دعوت                                                */
+/* Final screen and invitation */
 /* ------------------------------------------------------------------ */
 
 function renderMokab() {
@@ -428,7 +424,7 @@ async function handleInvite(button) {
 }
 
 /* ------------------------------------------------------------------ */
-/* اقدامات رابط                                                       */
+/* UI actions */
 /* ------------------------------------------------------------------ */
 
 const ACTIONS = {
@@ -487,11 +483,11 @@ const ACTIONS = {
 };
 
 /* ------------------------------------------------------------------ */
-/* رویدادهای سراسری                                                   */
+/* Global events */
 /* ------------------------------------------------------------------ */
 
 document.addEventListener("click", (event) => {
-  // منابع خارجی در حالت آفلاین: هشدار بهجای لینک شکسته.
+  // Warn instead of opening a broken external link while offline.
   const external = event.target.closest?.('a[href^="http"]');
   if (external && typeof navigator !== "undefined" && navigator.onLine === false) {
     event.preventDefault();
@@ -578,7 +574,7 @@ function showFatal() {
 }
 
 /* ------------------------------------------------------------------ */
-/* آغاز                                                               */
+/* Bootstrap */
 /* ------------------------------------------------------------------ */
 
 function init() {
@@ -597,7 +593,7 @@ function init() {
   updateResumeButton();
   if (typeof navigator !== "undefined" && navigator.onLine === false) updateOnlineBanner(false);
 
-  // بارگذاری فونت محلی پیش از نخستین رسم کارت.
+  // Load the local font before the first card render.
   ensureCardFonts(CONFIG.card.fontFamily).then((result) => {
     if (!result.ok && result.source !== "none") toast.info(COPY.cardFontFallback);
   }).catch(() => { /*noop*/ });

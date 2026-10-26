@@ -1,7 +1,4 @@
-/**
- * storage.js — دسترسی امن به localStorage.
- * تمام عملیات در try/catch هستند؛ JSON خراب یا نبود localStorage برنامه را متوقف نمیکند.
- */
+/** Safe localStorage access; malformed JSON or missing storage never crashes. */
 
 export const DEFAULT_STATE = Object.freeze({
   step: "welcome",
@@ -17,7 +14,7 @@ const SERIALIZABLE_KEYS = ["step", "category", "currentTextId", "seenTextIds", "
 function getLocalStorage() {
   try {
     if (typeof globalThis === "undefined" || !globalThis.localStorage) return null;
-    // برخی مرورگرها هنگام دسترسی (و نه هنگام setItem) خطا میدهند.
+    // Some browsers throw on property access rather than setItem.
     const probe = "__nazra_probe__";
     globalThis.localStorage.setItem(probe, "1");
     globalThis.localStorage.removeItem(probe);
@@ -53,12 +50,7 @@ function sanitize(raw) {
   return state;
 }
 
-/**
- * @param {object} p
- * @param {string} p.key
- * @param {Storage|null} p.storage تزریقپذیر برای تست
- * @param {Function} p.onError
- */
+/** @param {{key: string, storage: Storage|null, onError: Function}} p */
 export function createStateStore({ key, storage, onError } = {}) {
   const storageKey = key ?? "nazra.state.v1";
   const backend = storage === undefined ? getLocalStorage() : storage;
@@ -66,7 +58,7 @@ export function createStateStore({ key, storage, onError } = {}) {
 
   function report(error) {
     if (typeof onError === "function") {
-      try { onError(error); } catch { /* جلوگیری از خطای ثانویه */ }
+      try { onError(error); } catch { /* Avoid secondary errors. */ }
     }
   }
 
@@ -77,10 +69,10 @@ export function createStateStore({ key, storage, onError } = {}) {
       if (!raw) { cache = sanitize(null); return cache; }
       cache = sanitize(JSON.parse(raw));
     } catch (error) {
-      // JSON خراب → مقدار پیشفرض.
+      // Malformed JSON: use defaults.
       cache = sanitize(null);
       report(error);
-      try { backend?.removeItem(storageKey); } catch { /* بیتفاوت */ }
+      try { backend?.removeItem(storageKey); } catch { /* Ignore. */ }
     }
     return cache;
   }

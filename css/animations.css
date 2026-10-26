@@ -1,4 +1,4 @@
-/* animations.css — انیمیشنهای ۲۰۰–۳۰۰ میلیثانیهای و احترام به کاهش حرکت. */
+/* 200-300ms animations with reduced-motion support. */
 
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(10px); }

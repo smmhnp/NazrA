@@ -1,8 +1,4 @@
-/**
- * build-static.mjs — ساخت پوشهٔ dist فقط از فایلهای لازم برای انتشار.
- * بدون ابزار ساخت خارجی؛ فقط Node داخلی. خروجی قابل استقرار مستقیم است.
- * اجرا: npm run build
- */
+/** Build dist/ from publishable files only (npm run build). */
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -40,7 +36,7 @@ for (const rel of FILES) {
 }
 if (missing.length) { console.error("فایلهای مفقود:", missing.join(", ")); process.exit(1); }
 
-// اطمینان از اینکه تمام منابع APP_SHELL در خروجی وجود دارند.
+// Verify every APP_SHELL resource exists in the output.
 const sw = fs.readFileSync(path.join(dist, "sw.js"), "utf8");
 const entries = JSON.parse(sw.match(/const APP_SHELL = (\[[\s\S]*?\n\]);/)[1]);
 const absent = entries.filter((entry) => {

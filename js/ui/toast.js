@@ -1,4 +1,4 @@
-/** toast.js — اعلانهای کوتاه و اعلام وضعیت برای صفحهخوانها. */
+/** Short toasts and aria-live announcements. */
 import { iconSvg } from "./common.js";
 import { escapeHtml } from "../lib/utils.js";
 
@@ -25,7 +25,7 @@ export function createToaster({ root, statusRoot } = {}) {
         setTimeout(() => toast.remove(), 220);
       };
       setTimeout(remove, duration);
-    } catch { /* اعلان بصری نباید برنامه را متوقف کند */ }
+    } catch { /* A failed toast must not break the app. */ }
   }
 
   return {

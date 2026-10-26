@@ -1,13 +1,4 @@
-/**
- * card-engine.js — موتور مشترک تولید همهٔ کارتها (۱۰۸۰×۱۳۵۰، نسبت ۴:۵، PNG).
- *
- * سه قالب (طلایی / نور ملایم / نوار هندسی) فقط «پیکربندی» هستند؛
- * منطق رندر یکبار در renderCard نوشته شده است. هیچکدام از فعالیتها
- * (کارتپستال، سلفیکارت، کارت آزمون) رندر جداگانهای ندارند.
- *
- * renderCard خالص است (فقط ctx میگیرد) → در Node هم قابل تست است.
- * createCardBlob مرورگری است: بارگذاری فونت/تصاویر، رندر، toBlob، آزادسازی حافظه.
- */
+/** Shared 1080x1350 (4:5) Canvas renderer with three data-driven presets. */
 
 import { clamp, normalizePersian, toFaDigits } from "./lib/utils.js";
 
@@ -26,7 +17,7 @@ export class CardEngineError extends Error {
   }
 }
 
-/** پیکربندی دادهمحور قالبها — تنها تفاوت سه قالب همین اعداد و رنگها هستند. */
+/** Data-driven presets; renderCard implements all drawing. */
 export const CARD_PRESETS = {
   gold: {
     id: "gold",
@@ -87,7 +78,7 @@ export const CARD_PRESETS = {
 export const CARD_TEMPLATE_IDS = Object.keys(CARD_PRESETS);
 
 /* ------------------------------------------------------------------ */
-/* ابزارهای هندسی و متن (قابل تست)                                    */
+/* Geometry and text helpers (testable) */
 /* ------------------------------------------------------------------ */
 
 export function pathRoundRect(ctx, x, y, w, h, radius) {
@@ -106,7 +97,7 @@ export function pathRoundRect(ctx, x, y, w, h, radius) {
   return ctx;
 }
 
-/** شکستن یک واژهٔ بسیار بلند به قطعاتی که در عرض میگنجند. */
+/** Split an overlong word into measured chunks. */
 function breakLongWord(ctx, word, maxWidth) {
   const pieces = [];
   let chunk = "";
@@ -121,10 +112,7 @@ function breakLongWord(ctx, word, maxWidth) {
   return pieces.length ? pieces : [""];
 }
 
-/**
- * شکست خط دستی با اندازهگیری واقعی ctx.measureText.
- * خطوط صریح (\n) حفظ میشوند. خروجی هرگز از maxLines بیشتر نمیشود.
- */
+/** Manual RTL wrapping via ctx.measureText; never exceeds maxLines. */
 export function wrapText(ctx, text, maxWidth, { maxLines = 20 } = {}) {
   const width = Math.max(20, Number(maxWidth) || 20);
   const limit = Number.isFinite(maxLines) && maxLines > 0 ? Math.floor(maxLines) : 20;
@@ -162,10 +150,7 @@ export function wrapText(ctx, text, maxWidth, { maxLines = 20 } = {}) {
   return lines.slice(0, limit);
 }
 
-/**
- * کوچککردن کنترلشدهٔ اندازهٔ فونت تا متن در جعبه جا شود.
- * خروجی: {lines, fontSize, lineHeight, totalHeight, truncated}
- */
+/** Shrink font size until text fits; returns lines, fontSize, lineHeight. */
 export function fitTextLayout(ctx, text, {
   maxWidth, maxHeight, baseSize = 58, minSize = 28, lineHeight = 1.62,
   maxLines = 12, weight = 600, fontFamily = FALLBACK_FONT_STACK
@@ -176,7 +161,7 @@ export function fitTextLayout(ctx, text, {
   let last = { lines: [""], fontSize: minSize, lineHeight: minSize * lineHeight, totalHeight: minSize * lineHeight, truncated: true };
 
   for (let size = baseSize; size >= minSize; size -= step) {
-    try { ctx.font = `${weight} ${size}px ${fontFamily}`; } catch { /* فونت نامعتبر → ادامه */ }
+    try { ctx.font = `${weight} ${size}px ${fontFamily}`; } catch { /* Invalid font: keep going. */ }
     const lines = wrapText(ctx, text, width, { maxLines });
     const lh = size * lineHeight;
     const totalHeight = lines.length * lh;
@@ -184,7 +169,7 @@ export function fitTextLayout(ctx, text, {
     last = { lines, fontSize: size, lineHeight: lh, totalHeight, truncated: !fits };
     if (fits) return last;
   }
-  // بدترین حالت: متن بسیار بلند → برش با «…» در خط آخر.
+  // Last resort for very long text: truncate with an ellipsis.
   if (last.lines.length && last.lines.length >= maxLines) {
     const original = last.lines[maxLines - 1];
     last.lines = last.lines.slice(0, maxLines);
@@ -194,7 +179,7 @@ export function fitTextLayout(ctx, text, {
   return last;
 }
 
-/** محدودکردن جابهجایی تصویر بهگونهای که همیشه کل قاب پوشیده شود. */
+/** Clamp panning so the frame stays fully covered. */
 export function clampImageTransform(image, frame, transform = {}) {
   const iw = Math.max(1, Number(image?.width) || 1);
   const ih = Math.max(1, Number(image?.height) || 1);
@@ -210,7 +195,7 @@ export function clampImageTransform(image, frame, transform = {}) {
 }
 
 /* ------------------------------------------------------------------ */
-/* رندر مشترک                                                         */
+/* Shared rendering */
 /* ------------------------------------------------------------------ */
 
 function setFont(ctx, weight, size, family) {
@@ -228,7 +213,7 @@ function drawBackground(ctx, preset, brand) {
       gradient.addColorStop(1, "rgba(0,0,0,0)");
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
-    } catch { /* برخی پیادهسازیها گرادیان ندارند؛ پسزمینهٔ ساده کافی است */ }
+    } catch { /* Some implementations lack gradients; keep the flat background. */ }
   }
 }
 
@@ -249,7 +234,7 @@ function drawGeometry(ctx, preset) {
         ctx.moveTo(x - s * 0.5, y - s * 0.5); ctx.lineTo(x + s * 0.5, y + s * 0.5);
         ctx.moveTo(x + s * 0.5, y - s * 0.5); ctx.lineTo(x - s * 0.5, y + s * 0.5);
       } else {
-        // ستارهای هشتپر با خطوط ظریف
+        // Thin eight-point star lines.
         ctx.moveTo(x, y - s); ctx.lineTo(x, y + s);
         ctx.moveTo(x - s, y); ctx.lineTo(x + s, y);
         ctx.moveTo(x - s * 0.7, y - s * 0.7); ctx.lineTo(x + s * 0.7, y + s * 0.7);
@@ -334,7 +319,7 @@ function drawMedallion(ctx, preset) {
 }
 
 function drawFallbackMark(ctx, x, y, size, color) {
-  // نشان هندسی ساده — جایگزین لوگو در صورت نبود/خرابی فایل.
+  // Simple geometric mark used when the logo is missing.
   ctx.save();
   ctx.translate(x + size / 2, y + size / 2);
   ctx.strokeStyle = color;
@@ -376,7 +361,7 @@ function drawTextLines(ctx, layout, box, { color, align = "center", weight = 600
   ctx.save();
   setFont(ctx, weight, layout.fontSize, family);
   ctx.fillStyle = color;
-  ctx.textAlign = "right"; // راستچین فیزیکی برای RTL
+  ctx.textAlign = "right"; // Physical right alignment for RTL.
   ctx.textBaseline = "middle";
   const n = layout.lines.length;
   const total = n * layout.lineHeight;
@@ -476,7 +461,7 @@ function drawMedia(ctx, preset, image, transform, mirror, brand) {
     ctx.restore();
     throw new CardEngineError("IMAGE_DRAW_FAILED", "رسم تصویر روی بوم ممکن نشد.", error);
   }
-  // گرادیان ملایم پایین قاب برای خوانایی نوار متن.
+  // Soft bottom gradient keeps the caption band readable.
   try {
     const gradient = ctx.createLinearGradient(0, frame.y + frame.h * 0.45, 0, frame.y + frame.h);
     gradient.addColorStop(0, "rgba(0,0,0,0)");
@@ -546,13 +531,13 @@ function drawFooter(ctx, preset, options) {
   let drewLogo = false;
   if (logoImage && Number(logoImage.width) > 0 && Number(logoImage.height) > 0) {
     try {
-      // لوگوی رسمی کشیده/له نشود: نسبت ابعاد داخل کادر ۶۲px حفظ میشود.
+      // Keep the official logo's aspect ratio inside the 62px box.
       const ratio = Math.min(markSize / logoImage.width, markSize / logoImage.height);
       const w = logoImage.width * ratio;
       const h = logoImage.height * ratio;
       ctx.drawImage(logoImage, markX + (markSize - w) / 2, markY + (markSize - h) / 2, w, h);
       drewLogo = true;
-    } catch { /* fallback هندسی */ }
+    } catch { /* Geometric fallback. */ }
   }
   if (!drewLogo) drawFallbackMark(ctx, markX, markY, markSize, gold);
 
@@ -572,11 +557,7 @@ function drawFooter(ctx, preset, options) {
   ctx.restore();
 }
 
-/**
- * رندر کارت روی یک ctx ازپیشآماده. هیچ وابستگی به DOM/network ندارد.
- * @param {CanvasRenderingContext2D} ctx
- * @param {object} options
- */
+/** Draw a card onto a ready ctx; no DOM or network dependency. */
 export function renderCard(ctx, options = {}) {
   if (!ctx || typeof ctx.fillRect !== "function") {
     throw new CardEngineError("CANVAS_UNAVAILABLE", "بوم در دسترس نیست.");
@@ -589,7 +570,7 @@ export function renderCard(ctx, options = {}) {
   const normalized = { ...options, brand };
 
   ctx.save();
-  try { ctx.direction = "rtl"; } catch { /* برخی پیادهسازیها فقط getter دارند */ }
+  try { ctx.direction = "rtl"; } catch { /* Some implementations expose a getter only. */ }
   try {
     drawBackground(ctx, preset, brand);
     drawGeometry(ctx, preset);
@@ -613,7 +594,7 @@ export function renderCard(ctx, options = {}) {
   return { width: CARD_WIDTH, height: CARD_HEIGHT, templateId: preset.id };
 }
 
-/** رندر مقیاسشده برای پیشنمایش زنده (همان موتور، همان خروجی). */
+/** Scaled render for live preview (same engine and output). */
 export function renderCardScaled(ctx, options = {}, scale = 0.5) {
   const s = clamp(scale, 0.05, 1);
   ctx.save();
@@ -626,10 +607,10 @@ export function renderCardScaled(ctx, options = {}, scale = 0.5) {
 }
 
 /* ------------------------------------------------------------------ */
-/* لایهٔ مرورگری                                                      */
+/* Browser layer */
 /* ------------------------------------------------------------------ */
 
-/** بارگذاری فونت فارسی پیش از رسم متن. شکست آن فقط باعث استفاده از فونت جایگزین میشود. */
+/** Load the Persian font before drawing; failure falls back to system fonts. */
 export async function ensureCardFonts(family = "Vazirmatn") {
   if (typeof document === "undefined" || !document.fonts) return { ok: true, source: "none" };
   try {
@@ -670,7 +651,7 @@ function canvasToBlob(canvas) {
         return;
       }
     }
-    // پشتیبانی قدیمی: dataURL → Blob (بدون fetch).
+    // Legacy fallback: dataURL to Blob (no fetch).
     try {
       const dataUrl = canvas.toDataURL("image/png");
       const base64 = dataUrl.split(",")[1] ?? "";
@@ -684,10 +665,7 @@ function canvasToBlob(canvas) {
   });
 }
 
-/**
- * تولید کارت نهایی.
- * @returns {Promise<{blob: Blob, width: number, height: number, mimeType: string, fontFallback: boolean}>}
- */
+/** @returns {Promise<{blob: Blob, width: number, height: number, mimeType: string, fontFallback: boolean}>} */
 export async function createCardBlob(options = {}) {
   const family = options.fontFamily ?? "Vazirmatn";
   const fonts = await ensureCardFonts(family);
@@ -738,7 +716,7 @@ export async function createCardBlob(options = {}) {
     if (error instanceof CardEngineError) throw error;
     throw new CardEngineError("RENDER_FAILED", "رندر کارت با خطا روبهرو شد.", error);
   } finally {
-    // آزادسازی حافظهٔ تصاویر موقت و بوم.
+    // Release temporary images and canvas memory.
     try { if (logoImage) logoImage.src = ""; } catch { /*noop*/ }
     if (temporaryUrl && typeof URL !== "undefined" && URL.revokeObjectURL) {
       try { URL.revokeObjectURL(temporaryUrl); } catch { /*noop*/ }
@@ -750,7 +728,7 @@ export async function createCardBlob(options = {}) {
   }
 }
 
-/** نام فایل امن برای دانلود (بدون نویسههای کنترلی). */
+/** Sanitize a download filename (strip control characters). */
 export function safeDownloadName(name) {
   return String(name ?? "nazra-card.png").replace(/[<>:"\/\\|?*\x00-\x1f]/g, "-").slice(0, 120);
 }

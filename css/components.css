@@ -1,4 +1,4 @@
-/* components.css — دکمهها، کارتها، فیلدها، نشانها و اعلانها. */
+/* Buttons, cards, fields, badges, previews and toasts. */
 
 .card {
   background: var(--surface);
@@ -11,7 +11,7 @@
 .card__head .icon { color: var(--gold); width: 18px; height: 18px; }
 .card__head h2 { font-size: 14px; font-weight: 800; margin: 0; }
 
-/* دکمهها */
+/* Buttons */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 9px;
   width: 100%; min-height: 52px; padding: 12px 18px;
@@ -50,7 +50,7 @@
 .icon-button:hover { color: var(--gold); border-color: rgba(201, 162, 75, 0.42); }
 .icon-button .icon { width: 20px; height: 20px; }
 
-/* نشانها */
+/* Badges and chips */
 .badge {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 5px 11px; border-radius: 999px; font-size: 10.5px; font-weight: 800;
@@ -68,7 +68,7 @@
 .chips .chip { padding-inline: 6px; font-size: 11px; line-height: 1.5; text-align: center; }
 .notice { font-size: 11px; color: var(--text-secondary); background: var(--surface); border: 1px dashed var(--border); border-radius: 12px; padding: 9px 12px; margin: 10px 0 0; line-height: 1.8; }
 
-/* فیلدها */
+/* Form fields */
 .field { margin-bottom: 18px; }
 .field > label, .field__label { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 12px; font-weight: 800; margin-bottom: 8px; color: var(--text-primary); }
 .field__hint { font-size: 10.5px; font-weight: 400; color: var(--text-secondary); }
@@ -95,7 +95,7 @@
 .range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%; background: var(--gold); border: 3px solid #101216; margin-top: -9px; }
 .range::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--gold); border: 3px solid #101216; }
 
-/* پیشنمایش Canvas */
+/* Canvas preview */
 .preview-wrap { margin: 6px 0 18px; }
 .preview-wrap__label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary); margin: 0 0 8px; }
 .preview-wrap__label span { color: var(--gold); }
@@ -107,7 +107,7 @@
 .preview-empty .icon { width: 36px; height: 36px; color: var(--gold); opacity: .6; }
 .preview-hint { font-size: 10.5px; color: var(--text-secondary); text-align: center; margin: 8px 0 0; line-height: 1.8; }
 
-/* پیشرفت و پرسشها */
+/* Progress and quiz */
 .progress-wrap { margin-bottom: 16px; }
 .progress__label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary); margin-bottom: 7px; }
 .progress { height: 6px; border-radius: 999px; background: var(--surface-elevated); overflow: hidden; }
@@ -139,7 +139,7 @@
 .quiz-result__message { font-size: 13px; color: var(--text-secondary); line-height: 2; margin: 0 0 20px; }
 .quiz-result .btn { margin-top: 10px; }
 
-/* اعلانها */
+/* Toasts */
 .toast-region { position: fixed; inset-inline: 0; top: calc(10px + env(safe-area-inset-top)); z-index: 90; display: flex; flex-direction: column; align-items: center; gap: 8px; padding-inline: 14px; pointer-events: none; }
 .toast { max-width: 392px; width: 100%; display: flex; align-items: flex-start; gap: 9px; padding: 12px 15px; border-radius: 14px; border: 1px solid var(--border); background: rgba(30, 33, 39, 0.97); color: var(--text-primary); font-size: 12.5px; line-height: 1.9; box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5); pointer-events: auto; animation: toast-in 240ms var(--ease) both; }
 .toast .icon { width: 17px; height: 17px; margin-top: 3px; color: var(--gold); flex: 0 0 auto; }

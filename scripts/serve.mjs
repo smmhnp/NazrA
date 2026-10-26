@@ -1,8 +1,4 @@
-/**
- * serve.mjs — سرور ایستای توسعه بدون هیچ وابستگی (node:http).
- * اجرا: npm start  |  PORT=8080 npm start
- * سرصفحههای no-store از کششدن ناخواسته در محیط توسعه جلوگیری میکنند.
- */
+/** Dependency-free static dev server (node:http); npm start. */
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";

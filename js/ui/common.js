@@ -1,4 +1,4 @@
-/** common.js — ابزارهای مشترک رابط (بدون منطق کسبوکار). */
+/** Shared UI helpers without business logic. */
 import { CARD_WIDTH, CARD_HEIGHT, renderCardScaled } from "../card-engine.js";
 import { escapeHtml } from "../lib/utils.js";
 
@@ -27,7 +27,7 @@ export function iconSvg(id, className = "icon") {
   return `<svg class="${className}" aria-hidden="true"><use href="#i-${id}"></use></svg>`;
 }
 
-/** ساخت دکمههای قالب بهصورت دادهمحور. */
+/** Build template chips from data. */
 export function buildTemplateChips(container, templates, { selected, onSelect } = {}) {
   if (!container) return { getSelected: () => selected, setSelected: () => {} };
   let current = templates.some((t) => t.id === selected) ? selected : templates[0]?.id ?? "gold";
@@ -54,7 +54,7 @@ export function buildTemplateChips(container, templates, { selected, onSelect } 
   };
 }
 
-/** رندر پیشنمایش زنده با همان موتور کارت نهایی. */
+/** Render a live preview with the same card engine. */
 export function renderPreview(canvas, options = {}) {
   if (!canvas) return false;
   const ctx = canvas.getContext?.("2d");
@@ -78,7 +78,7 @@ export function schedulePreview(canvas, getOptions) {
   else run();
 }
 
-/** تنظیمات برند مشترک برای پیشنمایش و خروجی نهایی. */
+/** Shared brand options for preview and final output. */
 export function cardBrandOptions(config, extra = {}) {
   return {
     logoPath: config.logoPath,

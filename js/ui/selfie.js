@@ -1,8 +1,4 @@
-/**
- * selfie.js — کنترلر سلفیکارت.
- * عکس فقط بهصورت محلی خوانده میشود (createImageBitmap / object URL)؛
- * هیچ درخواست شبکهای، تحلیلگر یا ذخیرهسازی ابری وجود ندارد.
- */
+/** Selfie card controller; the photo is processed only on this device. */
 import { buildTemplateChips, schedulePreview, cardBrandOptions } from "./common.js";
 import { clamp, toFaDigits } from "../lib/utils.js";
 import { CARD_PRESETS } from "../card-engine.js";
@@ -11,7 +7,7 @@ export class SelfieImageError extends Error {
   constructor(code) { super(code); this.name = "SelfieImageError"; this.code = code; }
 }
 
-/** خواندن و اعتبارسنجی فایل تصویر روی همان دستگاه. */
+/** Read and validate the image file locally. */
 export async function decodeImageFile(file, { maxBytes = 15 * 1024 * 1024 } = {}) {
   if (!file) throw new SelfieImageError("cancelled");
   const type = String(file.type ?? "").toLowerCase();
@@ -27,7 +23,7 @@ export async function decodeImageFile(file, { maxBytes = 15 * 1024 * 1024 } = {}
       if (bitmap.width > 0 && bitmap.height > 0) return bitmap;
       bitmap.close?.();
     }
-  } catch { /* به روش قدیمی میرویم */ }
+  } catch { /* Fall through to the legacy method. */ }
 
   try {
     if (typeof URL === "undefined" || !URL.createObjectURL || typeof Image === "undefined") {
@@ -90,7 +86,7 @@ export function createSelfieUI({
   }
   function preview() {
     if (!image) {
-      // بدون عکس، بوم خنثی است تا پیام «عکسی انتخاب نشده» خوانا بماند.
+      // Keep the canvas neutral when no photo is chosen.
       const ctx = canvas?.getContext?.("2d");
       if (ctx) {
         try {
@@ -143,7 +139,7 @@ export function createSelfieUI({
       toast.error(messages[code] ?? copy.selfieDecodeFailed);
       setStatus(messages[code] ?? "");
     } finally {
-      if (fileInput) fileInput.value = ""; // اجازهٔ انتخاب دوبارهٔ همان فایل
+      if (fileInput) fileInput.value = ""; // Allow selecting the same file again.
     }
   }
 
@@ -174,7 +170,7 @@ export function createSelfieUI({
     }
   });
 
-  /* --- جابهجایی، زوم دو انگشتی و زوم با چرخ ماوس --- */
+  /* Pan, pinch zoom and mouse-wheel zoom. */
   const frameOf = () => CARD_PRESETS[chips.getSelected()]?.media ?? CARD_PRESETS.gold.media;
 
   function applyPan(dxPixels, dyPixels) {
@@ -247,7 +243,7 @@ export function createSelfieUI({
     }, makeButton);
   }
 
-  /** پاکسازی کامل هنگام شروع دوبارهٔ برنامه (آزادسازی حافظهٔ عکس). */
+  /** Full cleanup on restart (releases photo memory). */
   function reset() {
     releaseImage();
     transform.scale = 1; transform.x = 0; transform.y = 0; transform.mirror = false;

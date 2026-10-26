@@ -1,9 +1,9 @@
-/** utils.js — توابع خالص و بدون وابستگی به DOM. */
+/** Pure DOM-free helpers. */
 
 const FA_DIGITS = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
 const AR_DIGITS = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
 
-/** تبدیل ارقام لاتین/عربی به فارسی، با قابلیت صفرگذاری چپ. */
+/** Convert Latin/Arabic digits to Persian, with optional zero padding. */
 export function toFaDigits(value, { pad = 0 } = {}) {
   let str = String(value ?? "");
   str = str.replace(/[0-9]/g, (d) => FA_DIGITS[Number(d)]);
@@ -12,7 +12,7 @@ export function toFaDigits(value, { pad = 0 } = {}) {
   return str;
 }
 
-/** آیا مقدار، نماد «تنظیم نشده» است؟ */
+/** Whether a value represents an unset (TODO) setting. */
 export function isTodo(value) {
   if (value === null || value === undefined) return true;
   if (typeof value !== "string") return false;
@@ -26,7 +26,7 @@ export function clamp(value, min, max) {
   return Math.min(max, Math.max(min, n));
 }
 
-/** تبدیل امن برای innerHTML — در جاهایی که از رشتهسازی HTML ناگزیریم. */
+/** Escape strings used in innerHTML templates. */
 export function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -40,7 +40,7 @@ export function randomIndex(length, rng = Math.random) {
   return Math.floor(n * length);
 }
 
-/** یکنواختی نویسههای پربسامد عربی/فارسی برای اندازهگیری و جستجو. */
+/** Normalize common Arabic/Persian variants for measuring and search. */
 export function normalizePersian(value) {
   return String(value ?? "")
     .replace(/ي/g, "ی")
@@ -68,7 +68,7 @@ export function formatBytes(bytes) {
   return `${toFaDigits((bytes / 1024 ** i).toFixed(i === 0 ? 0 : 1))} ${units[i]}`;
 }
 
-/** آدرسهای http/https معتبر (برای منابع خارجی اختیاری). */
+/** Validate http/https URLs for optional external sources. */
 export function isSafeHttpUrl(value) {
   if (typeof value !== "string" || !value.trim()) return false;
   try {

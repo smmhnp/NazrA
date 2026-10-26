@@ -1,4 +1,4 @@
-/** postcard.js — کنترلر کارتپستال (پیشنمایش زنده از موتور مشترک). */
+/** Postcard controller with a live preview from the shared engine. */
 import { buildTemplateChips, schedulePreview, cardBrandOptions } from "./common.js";
 import { truncate, toFaDigits } from "../lib/utils.js";
 

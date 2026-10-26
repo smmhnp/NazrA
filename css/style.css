@@ -1,4 +1,4 @@
-/* style.css — توکنها، اسکلت، چیدمان و صفحات. */
+/* Design tokens, shell, layout and screens. */
 
 @font-face {
   font-family: "Vazirmatn";
@@ -113,7 +113,7 @@ body {
     radial-gradient(420px 300px at 50% 20%, rgba(201, 162, 75, 0.045), transparent 75%);
 }
 
-/* --- سربرگ و نوار پیشرفت --- */
+/* Header and stepper */
 .app-header {
   display: flex; align-items: center; gap: 12px;
   padding: calc(12px + env(safe-area-inset-top)) 18px 10px;
@@ -146,7 +146,7 @@ main:focus { outline: none; }
 .screen h1[tabindex="-1"]:focus,
 .screen h1[tabindex="-1"]:focus-visible { outline: none; }
 
-/* --- صفحات --- */
+/* Screens */
 .screen { display: flex; flex-direction: column; flex: 1 1 auto; }
 .screen > .sticky-actions { margin-top: auto; }
 .screen.is-entering { animation: fade-up 260ms var(--ease) both; }
@@ -171,7 +171,7 @@ main:focus { outline: none; }
   background: linear-gradient(to top, var(--bg) 62%, rgba(14, 15, 18, 0.86) 84%, transparent);
 }
 
-/* --- خوشآمدگویی --- */
+/* Welcome */
 .welcome { text-align: center; padding-top: 26px; }
 .welcome__mark { display: grid; place-items: center; margin-bottom: 22px; }
 .welcome__logo {
@@ -187,7 +187,7 @@ main:focus { outline: none; }
 .welcome__actions { display: flex; flex-direction: column; gap: 10px; }
 .welcome__footnote { font-size: 11px; color: var(--text-secondary); opacity: .8; margin: 22px 0 0; line-height: 1.9; }
 
-/* --- شبکهٔ دستهها --- */
+/* Category grid */
 .category-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .category-card {
   display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; gap: 14px;
@@ -207,7 +207,7 @@ main:focus { outline: none; }
 .category-card strong { font-size: 15px; font-weight: 800; }
 .category-card small { font-size: 11px; line-height: 1.7; color: var(--text-secondary); }
 
-/* --- کارت متن --- */
+/* Text card */
 .text-card { padding: 26px 22px 22px; min-height: 300px; display: flex; flex-direction: column; justify-content: space-between; }
 .text-card__body { font-size: clamp(17px, 5.1vw, 21px); line-height: 2.15; font-weight: 600; margin: 0 0 26px; text-wrap: pretty; }
 .text-card__body.is-long { font-size: clamp(15px, 4.3vw, 18px); line-height: 2.05; }
@@ -218,7 +218,7 @@ main:focus { outline: none; }
 .inline-link { color: var(--gold); text-decoration: none; border-bottom: 1px dashed rgba(201, 162, 75, 0.5); }
 .inline-link:hover { border-bottom-style: solid; }
 
-/* --- فهرست فعالیتها --- */
+/* Activity list */
 .activity-list { display: flex; flex-direction: column; gap: 12px; }
 .activity-card {
   display: flex; align-items: center; gap: 14px; width: 100%; text-align: right;
@@ -235,7 +235,7 @@ main:focus { outline: none; }
 .activity-card__text small { font-size: 11px; color: var(--text-secondary); }
 .activity-card__arrow { color: var(--gold); opacity: .7; width: 18px; height: 18px; }
 
-/* --- خروجی --- */
+/* Output */
 .output-empty { text-align: center; padding: 34px 22px; border-style: dashed; }
 .output-empty .icon { width: 40px; height: 40px; color: var(--gold); opacity: .65; }
 .output-empty p { font-size: 13px; color: var(--text-secondary); line-height: 2; margin: 12px 0 0; }
@@ -244,13 +244,13 @@ main:focus { outline: none; }
 .output-card__meta { font-size: 11px; color: var(--text-secondary); text-align: center; margin: 0; }
 .output-guide { font-size: 12px; color: var(--gold); background: var(--gold-glow); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; margin: 16px 0 0; line-height: 1.9; }
 
-/* --- صفحهٔ پایانی --- */
-/* صفحهٔ پایانی: فاصلهٔ یکنواخت بین سرتیتر، کارت موکب، کارت دعوت و دکمهٔ بازگشت */
+/* Final screen */
+/* Even spacing between final-screen sections. */
 .screen--final { gap: 30px; }
 .screen--final > .screen__head { margin-bottom: 2px; }
 .screen--final > .screen__actions { margin-top: 2px; }
 .screen--final > .card { margin: 0; }
-/* فاصلهٔ داخل کارت دعوت: بین عنوان و دکمهٔ «دعوت از یک دوست» */
+/* Spacing between the invite heading and its button. */
 #screen-final .invite-card .card__head { margin-bottom: 16px; }
 
 .final-message { color: var(--text-secondary); font-size: 14px; line-height: 2.1; margin: 8px auto 0; max-width: 34ch; }

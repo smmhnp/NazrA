@@ -1,10 +1,7 @@
-/**
- * quiz-engine.js — انتخاب پرسش و محاسبهٔ امتیاز (منطق خالص).
- * پاسخ صحیح فقط از content.js خوانده میشود؛ هیچ پاسخی در رابط ثابت نشده است.
- */
+/** Quiz selection and scoring (pure); answers come from content.js. */
 import { randomIndex } from "./utils.js";
 
-/** سه پرسش تصادفی از یک دسته؛ پرسشهای تأییدشده در اولویتاند. */
+/** Pick three random questions from a category, preferring verified ones. */
 export function selectQuestions(questions, category, count = 3, rng = Math.random) {
   const inCategory = (questions ?? []).filter((q) => q && q.category === category);
   const verified = inCategory.filter((q) => q.verified === true);
@@ -18,10 +15,7 @@ export function selectQuestions(questions, category, count = 3, rng = Math.rando
   return selected;
 }
 
-/**
- * @param {Array} questions پرسشهای انتخابشده
- * @param {Array<number|null>} answers اندیس گزینهٔ انتخابشده برای هر پرسش
- */
+/** @param {Array} questions @param {Array<number|null>} answers */
 export function scoreQuiz(questions, answers) {
   const list = Array.isArray(questions) ? questions : [];
   const given = Array.isArray(answers) ? answers : [];

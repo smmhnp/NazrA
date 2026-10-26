@@ -1,10 +1,4 @@
-/**
- * time.js — محاسبهٔ «شب جمعهٔ بعدی» با احترام به منطقهٔ زمانی و DST.
- *
- * بدون کتابخانهٔ خارجی: اختلاف offset از طریق Intl.DateTimeFormat بهدست میآید
- * و با چند بار تکرار، لحظهٔ UTC متناظر با ساعت محلی محاسبه میشود.
- * تغییر ساعت تابستانی (DST) بنابراین نیازی به فهرست قوانین ثابت ندارد.
- */
+/** Timezone/DST-aware helpers for the next Thursday-night event. */
 
 const formatterCache = new Map();
 
@@ -22,7 +16,7 @@ function getFormatter(timeZone) {
   return formatter;
 }
 
-/** «HH:MM» معتبر → {hours, minutes}؛ «TODO» یا ناقص → null. */
+/** Parse valid HH:MM; return null for TODO or invalid input. */
 export function parseEventTime(value) {
   if (typeof value !== "string") return null;
   const match = value.trim().match(/^(\d{1,2}):(\d{2})$/);
@@ -33,7 +27,7 @@ export function parseEventTime(value) {
   return { hours, minutes };
 }
 
-/** مؤلفههای ساعت محلی در منطقهٔ زمانی دادهشده. */
+/** Local wall-clock parts in the given time zone. */
 export function getZonedParts(instant, timeZone) {
   const date = instant instanceof Date ? instant : new Date(instant);
   if (Number.isNaN(date.getTime())) throw new TypeError("زمان نامعتبر است.");
@@ -44,7 +38,7 @@ export function getZonedParts(instant, timeZone) {
   if (![parts.year, parts.month, parts.day, parts.hour, parts.minute].every(Number.isFinite)) {
     throw new Error("خروجی Intl.DateTimeFormat نامعتبر است.");
   }
-  // روز هفته از روی تاریخ تقویمی محلی (مستقل از offset) محاسبه میشود.
+  // Derive weekday from the local calendar date (offset-independent).
   parts.weekday = new Date(Date.UTC(parts.year, parts.month - 1, parts.day)).getUTCDay();
   return parts;
 }
@@ -64,7 +58,7 @@ function wallMatches(p, local) {
     p.hour === local.hour && p.minute === local.minute;
 }
 
-/** تبدیل ساعت دیواریِ محلی به لحظهٔ UTC (با مدیریت شکاف/همپوشانی DST). */
+/** Convert local wall time to UTC, handling DST gaps and overlaps. */
 export function zonedTimeToUtc(local, timeZone) {
   const desiredWall = wallKey(local);
   const desiredAsUtc = Date.UTC(local.year, local.month - 1, local.day, local.hour, local.minute, 0);
@@ -79,20 +73,20 @@ export function zonedTimeToUtc(local, timeZone) {
   if (wallMatches(getZonedParts(candidate, timeZone), local)) return candidate;
 
   const scanned = [];
-  // پنجرهٔ ±۲ ساعت بهصورت دقیقهدقیقه بررسی میشود تا شکاف DST (ساعتی که وجود
-  // ندارد) و همپوشانی پاییزه (ساعتی که دوبار رخ میدهد) هم به نتیجهای معتبر برسند.
+  // Scan +/-2h minute-by-minute to cover DST gaps and overlaps.
+  // Keeps the result valid when an hour is missing or repeated.
   for (let minute = -120; minute <= 120; minute += 1) {
     const instant = new Date(guess + minute * 60000);
     const p = getZonedParts(instant, timeZone);
     if (wallMatches(p, local)) scanned.push(instant);
   }
   if (scanned.length) {
-    // در همپوشانی پاییزه، نخستین رخداد (offset تابستانی) انتخاب میشود.
+    // In an autumn overlap, pick the first occurrence (summer offset).
     scanned.sort((a, b) => a.getTime() - b.getTime());
     return scanned[0];
   }
 
-  // ساعت درخواستی وجود ندارد (شکاف بهاره): نخستین لحظهٔ معتبر بعد از آن.
+  // Missing hour (spring gap): use the first valid instant after it.
   let earliest = null;
   for (let minute = -120; minute <= 120; minute += 1) {
     const instant = new Date(guess + minute * 60000);
@@ -102,12 +96,7 @@ export function zonedTimeToUtc(local, timeZone) {
   return earliest ?? candidate;
 }
 
-/**
- * شب جمعهٔ بعدی.
- * @param {Date|number} now
- * @param {object} schedule {timeZone, eventTime, eventDayOfWeek}
- * @returns {{instant: Date, local: object}|null} null یعنی تنظیمات نامعتبر/تأییدنشده
- */
+/** Next scheduled event; null when settings are invalid or unverified. */
 export function getNextEvent(now, schedule = {}) {
   const current = now instanceof Date ? now : new Date(now);
   if (Number.isNaN(current.getTime())) return null;
@@ -133,7 +122,7 @@ export function getNextEvent(now, schedule = {}) {
         minute: time.minutes
       };
       const instant = zonedTimeToUtc(local, timeZone);
-      // «دقیقاً در زمان برگزاری یا بعد از آن» یعنی رویداد هفتهٔ بعد انتخاب شود.
+      // At or after the event instant, target the following week.
       if (instant && instant.getTime() > current.getTime()) return { instant, local };
     }
     return null;
@@ -142,7 +131,7 @@ export function getNextEvent(now, schedule = {}) {
   }
 }
 
-/** شکستن مدتزمان به روز/ساعت/دقیقه/ثانیه. */
+/** Split a duration into days/hours/minutes/seconds. */
 export function breakDownDuration(ms) {
   const total = Math.max(0, Math.floor(Number(ms) || 0));
   const day = 86400000, hour = 3600000, minute = 60000;
@@ -162,7 +151,7 @@ export function getCountdown(target, now = Date.now()) {
   return breakDownDuration(t - n);
 }
 
-/** تاریخ رویداد به فارسی و همان منطقهٔ زمانی (برای نمایش در رابط). */
+/** Format the event date in Persian using the same time zone. */
 export function formatEventDate(instant, timeZone) {
   try {
     return new Intl.DateTimeFormat("fa-IR", {

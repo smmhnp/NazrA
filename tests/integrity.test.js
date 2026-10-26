@@ -86,7 +86,7 @@ test("هیچ لینک شکسته، لینک خارجی یا منبع CDN در ر
     assert.ok(match[1] && ids.has(match[1]), `لنگر شکسته: #${match[1]}`);
   }
   for (const match of html.matchAll(/(?:src|href)\s*=\s*"([^"]+)"/g)) {
-    assert.ok(!/^https?:\/\//.test(match[1]), `منبع خارجی در HTML: ${match[1]}`);
+    assert.ok(!/^https?:\/{2}/.test(match[1]), `منبع خارجی در HTML: ${match[1]}`);
   }
   const css = ["css/style.css", "css/components.css", "css/animations.css"].map(read).join("\n");
   for (const match of css.matchAll(/url\(["']?([^"')]+)["']?\)/g)) {
@@ -94,7 +94,7 @@ test("هیچ لینک شکسته، لینک خارجی یا منبع CDN در ر
     if (value.startsWith("data:")) continue;
     assert.ok(exists(path.join("css", value).replace(/\\/g, "/")), `منبع CSS مفقود: ${value}`);
   }
-  assert.ok(!/https?:\/\//.test(css.replace(/xmlns[^)]*/g, "")), "نباید CDN خارجی وجود داشته باشد");
+  assert.ok(!/https?:\/{2}/.test(css.replace(/xmlns[^)]*/g, "")), "نباید CDN خارجی وجود داشته باشد");
 });
 
 test("همهٔ importهای ماژولها به فایلهای موجود اشاره دارند", () => {
@@ -134,7 +134,7 @@ test("ورودی فایل و پیام حریم خصوصی دقیقاً طبق ا
   assert.ok(/<input[^>]+type="file"[^>]+accept="image\/\*"[^>]+capture="user"/.test(html));
   assert.ok(html.includes("عکس شما فقط روی همین دستگاه پردازش میشود"));
   assert.ok(/<html[^>]+lang="fa"[^>]+dir="rtl"/.test(html));
-  assert.ok(html.includes("env(safe-area-inset-bottom)") === false); // در CSS است
+  assert.ok(html.includes("env(safe-area-inset-bottom)") === false); // Defined in CSS.
   const css = read("css/style.css");
   assert.ok(css.includes("env(safe-area-inset-bottom)"));
   assert.ok(css.includes("prefers-reduced-motion") || read("css/animations.css").includes("prefers-reduced-motion"));

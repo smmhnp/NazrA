@@ -1,8 +1,4 @@
-/**
- * bump-sw.mjs — نسخهٔ کش Service Worker را از روی محتوای واقعی فایلها میسازد.
- * با هر تغییر در منابع اصلی، «npm run sw:version» را اجرا کنید.
- * --check فقط بررسی میکند و چیزی نمینویسد (مناسب CI و npm run check).
- */
+/** Derive the SW cache version from file hashes (--check for CI). */
 import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
@@ -19,8 +15,8 @@ try { entries = JSON.parse(shellMatch[1]); }
 catch (error) { console.error("APP_SHELL باید JSON معتبر باشد:", error.message); process.exit(1); }
 
 const hash = crypto.createHash("sha256");
-// خود sw.js (بدون خط نسخه) هم در هش شرکت میکند تا تغییر استراتژی کش،
-// حتماً نام کش جدیدی بسازد.
+// Hash sw.js itself (minus the version line) so logic changes bump the cache.
+// Ensures a fresh cache name after any strategy change.
 hash.update("sw.js");
 hash.update(source.replace(/const CACHE_VERSION = "[^"]*";/, 'const CACHE_VERSION = "";'));
 const missing = [];

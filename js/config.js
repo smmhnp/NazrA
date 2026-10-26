@@ -1,31 +1,25 @@
-/**
- * config.js — یگانه منبع تنظیمات پروژه.
- *
- * ⚠️ مقادیر «TODO» تأییدنشدهاند و نباید بهعنوان اطلاعات واقعی نمایش داده شوند.
- * برای انتشار، فقط این فایل (و محتوای content.js) را ویرایش کنید.
- * هیچ مقداری در این فایل از سرور، API یا سرویس خارجی خوانده نمیشود.
- */
+/** Single source of project settings; TODO values are unverified. */
 
 export const CONFIG = {
   universityName: "موسسه آموزش عالی شاندیز",
   programTitle: "نهضت هر شب جمعه",
   logoPath: "./assets/logo.png",
 
-  // آدرس ایمیل نهضت. «TODO» یعنی تنظیم نشده → لینک mailto ساخته نمیشود.
+  // Program email; TODO means no mailto link is built.
   NEHZAT_EMAIL: "TODO",
 
-  // آدرس دقیق موکب. «TODO» یعنی اعلامنشده.
+  // Exact mokab address; TODO means unpublished.
   mosqueAddress: "TODO",
 
-  // ساعت برگزاری به وقت محلیِ timeZone، قالب «HH:MM».
-  // «TODO» یعنی ساعت تأییدنشده → شمارش معکوس نمایش داده نمیشود.
+  // Event time in the local timeZone, HH:MM.
+  // TODO: show a to-be-announced message instead.
   eventTime: "TODO",
 
-  // منطقه زمانی صریح (IANA) برای نمایش ساعت برگزاری.
+  // Explicit IANA time zone for the displayed event time.
   timeZone: "Asia/Tehran",
 
-  // روز برگزاری: ۰=یکشنبه … ۴=پنجشنبه (شب جمعه) … ۶=شنبه.
-  // «شب جمعه» در تقویم ایرانی برابر است با غروب/شب پنجشنبه.
+  // Weekday: 0=Sunday ... 4=Thursday (Friday eve) ... 6=Saturday.
+  // In the Iranian calendar, Friday eve falls on Thursday night.
   eventDayOfWeek: 4,
 
   brand: {
@@ -40,7 +34,7 @@ export const CONFIG = {
     glow: "rgba(201, 162, 75, 0.08)"
   },
 
-  // متن ثابت پایین همهٔ کارتها. نام مکان بهصورت واقعی ادعا نمیشود.
+  // Fixed card footer line; no real location is claimed.
   card: {
     footerLine: "شب جمعه، موکب …",
     headerLine: "ایام فاطمیه • نهضت هر شب جمعه",
@@ -54,7 +48,7 @@ export const CONFIG = {
 
   storageKey: "nazra.state.v1",
 
-  // نسخهٔ کش توسط scripts/bump-sw.mjs مدیریت میشود.
+  // Cache version is managed by scripts/bump-sw.mjs.
   serviceWorkerPath: "./sw.js"
 };
 

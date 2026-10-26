@@ -1,4 +1,4 @@
-/** quiz.js — کنترلر صفحهٔ پرسش و پاسخ (منطق امتیاز در quiz-engine.js). */
+/** Quiz screen controller; scoring lives in quiz-engine.js. */
 import { selectQuestions, scoreQuiz, getResultMessage } from "../lib/quiz-engine.js";
 import { escapeHtml, toFaDigits } from "../lib/utils.js";
 import { setLoading } from "./common.js";
@@ -46,7 +46,7 @@ export function createQuizUI({ root, questions, copy, quizMessages = {}, toast, 
     render();
   }
 
-  /** بازیابی نشست نیمهتمام از localStorage. */
+  /** Restore an unfinished session from localStorage. */
   function restore(categoryId, saved) {
     category = categoryId;
     const byId = new Map(questions.map((q) => [q.id, q]));

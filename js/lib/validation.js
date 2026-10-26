@@ -1,7 +1,4 @@
-/**
- * validation.js — اعتبارسنجی محتوای content.js در زمان اجرا.
- * رکوردهای ناقص حذف میشوند؛ رکوردهای تأییدنشده حفظ ولی برچسبگذاری میشوند.
- */
+/** Runtime validation of content.js; invalid records are dropped, unverified ones flagged. */
 import { isSafeHttpUrl, isTodo } from "./utils.js";
 
 const SOURCE_TYPES = new Set(["placeholder", "editorial", "app-doc", "sourced"]);
@@ -30,11 +27,7 @@ function validateCommon(record, kind, errors) {
   return true;
 }
 
-/**
- * بررسی یک رکورد متن.
- * خروجی: { valid, needsReview, errors[], record }
- * needsReview یعنی رابط باید «نمونهٔ نیازمند تأیید منبع» را نمایش دهد.
- */
+/** Validate a text record; needsReview drives the source-warning badge. */
 export function validateTextRecord(raw) {
   const errors = [];
   if (!validateCommon(raw, "متن", errors)) return { valid: false, needsReview: true, errors, record: null };
@@ -42,12 +35,12 @@ export function validateTextRecord(raw) {
 
   const sourceType = raw.sourceType ?? "placeholder";
   const verified = raw.verified === true;
-  // نشانهٔ واقعی «نیازمند تکمیل»: شناسه یا منبع TODO، یا بدنهای که دقیقاً با TODO آغاز شود.
+  // Real TODO markers: TODO id/source or a body starting with TODO.
   const textHasTodo = isTodo(raw.text) || /^TODO\b/i.test(String(raw.text ?? "").trim());
   const sourceHasTodo = isTodo(raw.source) || /^TODO\b/i.test(String(raw.source ?? "").trim());
   const idHasTodo = /^TODO_/i.test(String(raw.id ?? ""));
 
-  // اگر منبع TODO است، رکورد نمیتواند تأییدشده باشد.
+  // A TODO source cannot be marked verified.
   if (verified && (sourceHasTodo || textHasTodo || idHasTodo)) {
     errors.push("متن: رکورد حاوی TODO است ولی verified:true دارد.");
   }
@@ -71,7 +64,7 @@ export function validateTextRecord(raw) {
   return { valid, needsReview, errors, record };
 }
 
-/** بررسی یک پرسش چهارگزینهای. */
+/** Validate a four-option question record. */
 export function validateQuestionRecord(raw) {
   const errors = [];
   if (!validateCommon(raw, "پرسش", errors)) return { valid: false, needsReview: true, errors, record: null };
@@ -86,7 +79,7 @@ export function validateQuestionRecord(raw) {
 
   const sourceType = raw.sourceType ?? "placeholder";
   const verified = raw.verified === true;
-  // پرسشهای فنی ممکن است واژهٔ TODO را *توضیح* دهند؛ فقط نشانههای ساختاری مهماند.
+  // Technical questions may mention TODO; only structural markers matter.
   const hasTodo = isTodo(raw.source) || /^TODO\b/i.test(String(raw.source ?? "").trim()) ||
     /^TODO_/i.test(String(raw.id ?? "")) ||
     /^TODO\b/i.test(String(raw.question ?? "").trim());
@@ -112,7 +105,7 @@ export function validateQuestionRecord(raw) {
   return { valid, needsReview, errors, record };
 }
 
-/** اعتبارسنجی کل مجموعهٔ محتوا. */
+/** Validate the whole content set. */
 export function validateContent({ texts = [], questions = [], categories = [] } = {}) {
   const errors = [];
   const validTexts = [];

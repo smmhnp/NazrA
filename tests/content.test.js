@@ -71,7 +71,7 @@ test("رکورد متن منقول (sourced) با منبع دقیق پذیرفت
   assert.equal(record.needsReview, false);
   assert.equal(record.record.sourceType, "sourced");
   assert.equal(record.record.sourceUrl, "https://example.org/book");
-  // منبع نامعتبر یا تأییدنشده همچنان برچسب میخورد.
+  // Invalid or unverified sources still get flagged.
   assert.equal(validateTextRecord({
     id: "sourced_x", category: "prayer", text: "متن",
     source: "TODO — منبع", verified: true, sourceType: "sourced"

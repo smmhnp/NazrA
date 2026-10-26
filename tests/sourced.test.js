@@ -1,4 +1,4 @@
-/** sourced.test.js — نمایش صحیح متن «منقول با منبع» در رابط. */
+/** A sourced text renders the correct badge and note. */
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -33,8 +33,8 @@ test("متن sourced برچسب «متن با منبع مشخص» و یاددا�
   setGlobal("cancelAnimationFrame", (id) => clearTimeout(id));
   t.after(() => dom.window.close());
 
-  // پیش از بارگذاری app.js، تنها یک رکورد منقول با منبع معتبر قرار میدهیم.
-  // بدون query تا دقیقاً همان نمونهای باشد که app.js از "./content.js" میگیرد.
+  // Provide a single sourced record before loading app.js.
+  // No query so it is the same module instance app.js imports.
   const content = await import("../js/content.js");
   content.TEXT_RECORDS.length = 0;
   content.TEXT_RECORDS.push({
