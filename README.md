@@ -157,9 +157,20 @@ python3 -m http.server 4173 --bind 0.0.0.0
 
 ### د) هر هاست ایستای دیگر
 
-`npm run build` → محتوای `dist/` را روی هاست (Cloudflare Pages، Vercel static،
-Apache/Nginx، S3+CloudFront و…) قرار دهید. فقط الزامی است که سرویس روی **HTTPS**
-باشد تا Service Worker و Web Share API قابل استفاده باشند.
+`npm run build` → **محتوای داخل** `dist/` (خود پوشه را نه) را در `public_html/`
+یا ریشهٔ سایت بریزید. فایل `dist/.htaccess` برای هاستهای Apache/cPanel هدرهای
+`no-cache` برای `sw.js` و `Service-Worker-Allowed` و نوع فایلهای `woff2`/manifest
+را تنظیم میکند (همهٔ دستورها با `IfModule` محافظت شدهاند و روی Nginx بیتأثیرند).
+میتوانید بهجای آپلود تکتک فایلها، یک ZIP تهیه و در هاست استخراج کنید:
+
+```bash
+cd dist && zip -r ../nazra-dist.zip . && cd ..
+```
+
+> دقت کنید **محتوای** `dist/` در ریشهٔ ZIP باشد (همانطور که دستور بالا میسازد)،
+> یعنی `index.html` و `sw.js` در ریشهٔ `public_html/` قرار بگیرند، نه داخل پوشهٔ `dist/`.
+فقط الزامی است که سرویس روی **HTTPS** باشد تا Service Worker و Web Share API
+قابل استفاده باشند.
 
 > **نسخهٔ کش:** نام کش `nazra-static-<hash>` است. هش از محتوای تمام منابع
 > `APP_SHELL` **و خود `sw.js`** ساخته میشود. با هر تغییر در فونت/CSS/JS/HTML یا

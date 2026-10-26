@@ -7,7 +7,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
 
 const FILES = [
-  "index.html", "manifest.json", "sw.js", "README.md",
+  "index.html", "manifest.json", "sw.js", "README.md", ".htaccess",
   "css/style.css", "css/components.css", "css/animations.css",
   "js/app.js", "js/config.js", "js/content.js", "js/card-engine.js",
   "js/lib/utils.js", "js/lib/validation.js", "js/lib/selection.js",
