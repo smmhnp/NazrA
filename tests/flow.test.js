@@ -242,7 +242,7 @@ test("مسیر کامل کاربر: آغاز → پنج دسته → متن → 
   click($('#screen-welcome [data-action="resume"]'));
   assert.equal(visible("final"), true, "ادامهٔ مسیر قبل");
 
-  // ۱۰. صفحهٔ پایانی: تنظیمات TODO، شمارش معکوس جعلی نمیشود
+  // ۱۰. صفحهٔ پایانی: تنظیمات TODO و نبود سکشنهای حذفشده
   assert.equal(visible("final"), true);
   assert.ok($("#mokab-address").textContent.includes("بهزودی"));
   assert.ok($("#mokab-time").textContent.includes("بهزودی"));
@@ -250,13 +250,10 @@ test("مسیر کامل کاربر: آغاز → پنج دسته → متن → 
   assert.equal($("#screen-final").classList.contains("screen--final"), true, "فاصلهگذاری صفحهٔ آخر");
   assert.equal($$("#screen-final > .card").length, 2);
   assert.ok($("#mokab-timezone").textContent.includes("Asia/Tehran"));
-  assert.ok($("#coming-note").textContent.includes("ثبتنام"));
-
-  // «میآیم» در localStorage حفظ میشود
-  click(action("toggle-coming"));
-  assert.equal($("#coming-button").getAttribute("aria-pressed"), "true");
+  assert.equal($("#coming-button"), null, "دکمهٔ میآیم حذف شده است");
+  assert.equal($("#coming-note"), null, "یادداشت میآیم حذف شده است");
+  assert.ok($$("#screen-final .btn--primary").length === 0, "هیچ دکمهٔ اصلی در صفحهٔ آخر نیست");
   const stored = JSON.parse(window.localStorage.getItem("nazra.state.v1"));
-  assert.equal(stored.coming, true);
   assert.equal(stored.step, "final");
 
   // دعوت از دوست: مسیر جایگزین کپی (مرورگری بدون Web Share API)

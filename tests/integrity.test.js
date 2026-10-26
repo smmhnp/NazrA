@@ -56,6 +56,8 @@ test("APP_SHELL شامل فونتها، CSS، JS، لوگو و آیکونها ا
 test("نسخهٔ کش با محتوای فایلها هماهنگ است", () => {
   const entries = JSON.parse(swSource.match(/const APP_SHELL = (\[[\s\S]*?\n\]);/)[1]);
   const hash = crypto.createHash("sha256");
+  hash.update("sw.js");
+  hash.update(swSource.replace(/const CACHE_VERSION = "[^"]*";/, 'const CACHE_VERSION = "";'));
   for (const entry of entries) {
     const rel = entry === "./" ? "index.html" : entry.replace(/^\.\//, "");
     hash.update(rel);
@@ -124,6 +126,8 @@ test("لوگوی رسمی جایگزین شده و سکشن شمارش معکو�
   assert.ok(!html.includes("cd-seconds"));
   assert.ok(read("css/style.css").includes(".screen--final"), "فاصلهگذاری صفحهٔ آخر");
   assert.ok(!read("css/style.css").includes(".countdown-grid"));
+  assert.ok(!html.includes('data-action="toggle-coming"'), "دکمهٔ میآیم حذف شده است");
+  assert.ok(!read("js/app.js").includes("renderComing"));
 });
 
 test("ورودی فایل و پیام حریم خصوصی دقیقاً طبق الزامات است", () => {

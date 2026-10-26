@@ -9,11 +9,10 @@ export const DEFAULT_STATE = Object.freeze({
   currentTextId: null,
   seenTextIds: [],
   quiz: { questionIds: [], answers: [], index: 0 },
-  ui: { postcardTemplate: "gold", selfieTemplate: "gold" },
-  coming: false
+  ui: { postcardTemplate: "gold", selfieTemplate: "gold" }
 });
 
-const SERIALIZABLE_KEYS = ["step", "category", "currentTextId", "seenTextIds", "quiz", "ui", "coming"];
+const SERIALIZABLE_KEYS = ["step", "category", "currentTextId", "seenTextIds", "quiz", "ui"];
 
 function getLocalStorage() {
   try {
@@ -51,7 +50,6 @@ function sanitize(raw) {
       selfieTemplate: typeof raw.ui.selfieTemplate === "string" ? raw.ui.selfieTemplate : "gold"
     };
   }
-  state.coming = raw.coming === true;
   return state;
 }
 

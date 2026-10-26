@@ -246,14 +246,14 @@ main:focus { outline: none; }
 
 /* --- صفحهٔ پایانی --- */
 /* صفحهٔ پایانی: فاصلهٔ یکنواخت بین سرتیتر، کارت موکب، کارت دعوت و دکمهٔ بازگشت */
-.screen--final { gap: 18px; }
+.screen--final { gap: 30px; }
 .screen--final > .screen__head { margin-bottom: 2px; }
 .screen--final > .screen__actions { margin-top: 2px; }
 .screen--final > .card { margin: 0; }
+/* فاصلهٔ داخل کارت دعوت: بین عنوان و دکمهٔ «دعوت از یک دوست» */
+#screen-final .invite-card .card__head { margin-bottom: 16px; }
 
 .final-message { color: var(--text-secondary); font-size: 14px; line-height: 2.1; margin: 8px auto 0; max-width: 34ch; }
-.mokab-card .btn { margin-top: 18px; }
-.mokab-note { font-size: 11px; color: var(--text-secondary); line-height: 1.9; text-align: center; margin: 12px 0 0; }
 .detail-list { list-style: none; padding: 0; margin: 14px 0 0; display: flex; flex-direction: column; gap: 12px; }
 .detail-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.9; }
 .detail-list .icon { color: var(--gold); margin-top: 5px; width: 17px; height: 17px; opacity: .85; }

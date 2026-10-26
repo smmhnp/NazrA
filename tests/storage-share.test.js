@@ -19,36 +19,34 @@ test("JSON خراب به مقدار پیشفرض برمیگردد و خطا گز
   const store = createStateStore({ key: "key", storage: backend, onError: () => { reported += 1; } });
   const state = store.load();
   assert.equal(state.step, DEFAULT_STATE.step);
-  assert.equal(state.coming, false);
+  assert.equal(state.currentTextId, null);
   assert.equal(reported, 1);
 });
 
 test("نبود localStorage برنامه را متوقف نمیکند", () => {
   const throwing = { getItem() { throw new Error("blocked"); }, setItem() { throw new Error("blocked"); }, removeItem() { throw new Error("blocked"); } };
   const store = createStateStore({ key: "k", storage: throwing });
-  const s = store.save({ step: "text", coming: true });
+  const s = store.save({ step: "text", category: "prayer" });
   assert.equal(s.step, "text");
-  assert.equal(s.coming, true);
+  assert.equal(s.category, "prayer");
 });
 
-test("وضعیت «میآیم» و پیشرفت ذخیره و بازیابی میشود", () => {
+test("پیشرفت و تنظیمات رابط ذخیره و بازیابی میشود", () => {
   const backend = fakeStorage();
   const first = createStateStore({ key: "state", storage: backend });
-  first.save({ step: "final", category: "prayer", coming: true, seenTextIds: ["a", "b"], ui: { postcardTemplate: "band", selfieTemplate: "glow" } });
+  first.save({ step: "final", category: "prayer", seenTextIds: ["a", "b"], ui: { postcardTemplate: "band", selfieTemplate: "glow" } });
   const second = createStateStore({ key: "state", storage: backend });
   const loaded = second.load();
   assert.equal(loaded.step, "final");
-  assert.equal(loaded.coming, true);
   assert.deepEqual(loaded.seenTextIds, ["a", "b"]);
   assert.equal(loaded.ui.postcardTemplate, "band");
 });
 
 test("قسمتهای ناامن ورودی پاکسازی میشوند", () => {
-  const store = createStateStore({ key: "k", storage: fakeStorage({ k: JSON.stringify({ step: "<script>", category: 12, coming: "yes", seenTextIds: [1, "ok", null] }) }) });
+  const store = createStateStore({ key: "k", storage: fakeStorage({ k: JSON.stringify({ step: "<script>", category: 12, seenTextIds: [1, "ok", null] }) }) });
   const s = store.load();
   assert.equal(s.step, "welcome");
   assert.equal(s.category, null);
-  assert.equal(s.coming, false);
   assert.deepEqual(s.seenTextIds, ["ok"]);
 });
 

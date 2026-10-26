@@ -19,6 +19,10 @@ try { entries = JSON.parse(shellMatch[1]); }
 catch (error) { console.error("APP_SHELL باید JSON معتبر باشد:", error.message); process.exit(1); }
 
 const hash = crypto.createHash("sha256");
+// خود sw.js (بدون خط نسخه) هم در هش شرکت میکند تا تغییر استراتژی کش،
+// حتماً نام کش جدیدی بسازد.
+hash.update("sw.js");
+hash.update(source.replace(/const CACHE_VERSION = "[^"]*";/, 'const CACHE_VERSION = "";'));
 const missing = [];
 for (const entry of entries) {
   const relative = entry === "./" ? "index.html" : entry.replace(/^\.\//, "");

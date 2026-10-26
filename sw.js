@@ -1,7 +1,7 @@
 /* sw.js — Service Worker نسخهدار و آفلاینمحور.            */
 /* نسخهٔ کش توسط «npm run sw:version» از روی محتوای فایلها ساخته میشود. */
 
-const CACHE_VERSION = "nazra-53b59528fafe";
+const CACHE_VERSION = "nazra-fbe905df2b87";
 const CACHE_NAME = `nazra-static-${CACHE_VERSION}`;
 const CACHE_PREFIX = "nazra-static-";
 
@@ -128,20 +128,14 @@ self.addEventListener("fetch", (event) => {
       }
     }
 
-    if (cached) {
-      // stale-while-revalidate: پاسخ فوری از کش، بهروزرسانی در پسزمینه.
-      fetch(request).then((network) => {
-        if (network && network.ok) return cache.put(request, network.clone());
-      }).catch(() => {});
-      return cached;
-    }
-
+    // network-first: هنگام آنلاینبودن همیشه تازهترین HTML/CSS/JS/فونت دریافت میشود
+    // (جلوگیری از نمایش نسخهٔ قدیمی بعد از استقرار)؛ هنگام آفلاین، همان فایل از کش.
     try {
-      const network = await fetch(request);
+      const network = await fetch(request, { cache: "no-store" });
       if (network && network.ok) await cache.put(request, network.clone());
       return network;
     } catch {
-      return Response.error();
+      return cached ?? Response.error();
     }
   })());
 });

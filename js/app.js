@@ -376,7 +376,7 @@ async function shareCard(button) {
 }
 
 /* ------------------------------------------------------------------ */
-/* صفحهٔ پایانی، شمارش معکوس، دعوت، «میآیم»                          */
+/* صفحهٔ پایانی و دعوت                                                */
 /* ------------------------------------------------------------------ */
 
 function renderMokab() {
@@ -394,16 +394,8 @@ function renderMokab() {
   $("#mokab-title").textContent = COPY.mokabTitle;
 }
 
-function renderComing() {
-  const button = $("#coming-button");
-  button.setAttribute("aria-pressed", String(S.coming === true));
-  $("#coming-label").textContent = S.coming ? COPY.comingOn : COPY.comingOff;
-  $("#coming-note").textContent = CONFIG.privacy.comingNotice;
-}
-
 function renderFinal() {
   renderMokab();
-  renderComing();
   const url = getAppUrl();
   $("#invite-text-preview").value = COPY.inviteBody(CONFIG.universityName, url);
   $("#invite-link").value = url;
@@ -467,12 +459,6 @@ const ACTIONS = {
   "go-final"() { showScreen("final"); },
   "download-card"() { downloadCard(); },
   "share-card"(button) { return shareCard(button); },
-  "toggle-coming"() {
-    const next = S.coming !== true;
-    setState({ coming: next });
-    renderComing();
-    if (next) toast.success(COPY.comingSaved);
-  },
   "invite-friend"(button) { return handleInvite(button); },
   "copy-invite-text"() {
     copyText($("#invite-text-preview").value).then((ok) =>
