@@ -10,7 +10,7 @@ import {
 import { validateContent, getTextsByCategory } from "./lib/validation.js";
 import { pickText, findRecordById } from "./lib/selection.js";
 import { createStateStore } from "./lib/storage.js";
-import { parseEventTime, getNextEvent, getCountdown, formatEventDate } from "./lib/time.js";
+import { parseEventTime } from "./lib/time.js";
 import { isTodo, toFaDigits, isSafeHttpUrl, escapeHtml } from "./lib/utils.js";
 import {
   buildFileName, shareOrDownload, copyText, inviteFriend, getAppUrl, defaultDownload
@@ -55,8 +55,6 @@ const runtime = {
   currentText: null,
   card: null,
   cardUrl: null,
-  countdownTimer: null,
-  nextEvent: null,
   onlineBannerTimer: null
 };
 
@@ -157,10 +155,6 @@ const activityModules = { quiz: quizUI, postcard: postcardUI, selfie: selfieUI }
 /* مسیریابی                                                           */
 /* ------------------------------------------------------------------ */
 
-function stopCountdown() {
-  if (runtime.countdownTimer) { clearInterval(runtime.countdownTimer); runtime.countdownTimer = null; }
-}
-
 function showScreen(name, { persist = true, focus = true } = {}) {
   if (!SCREEN_META[name]) name = "welcome";
   const previous = runtime.currentScreen;
@@ -183,8 +177,6 @@ function showScreen(name, { persist = true, focus = true } = {}) {
   $("#stepper-name").textContent = meta.label;
   $("#stepper-fill").style.width = `${(meta.step / 6) * 100}%`;
   $("#stepper-progress").setAttribute("aria-valuenow", String(meta.step));
-
-  if (name !== "final") stopCountdown();
 
   if (name === "text") renderText(runtime.currentText);
   else if (name === "quiz") initQuizSession();
@@ -409,62 +401,8 @@ function renderComing() {
   $("#coming-note").textContent = CONFIG.privacy.comingNotice;
 }
 
-function renderCountdown() {
-  const grid = $("#countdown-grid");
-  const message = $("#countdown-message");
-  const dateLine = $("#countdown-date");
-  $("#countdown-title").textContent = COPY.countdownTitle;
-  stopCountdown();
-
-  const schedule = {
-    timeZone: CONFIG.timeZone,
-    eventTime: CONFIG.eventTime,
-    eventDayOfWeek: CONFIG.eventDayOfWeek
-  };
-  if (!parseEventTime(schedule.eventTime)) {
-    grid.hidden = true;
-    dateLine.hidden = true;
-    message.hidden = false;
-    message.textContent = COPY.countdownUnavailable;
-    runtime.nextEvent = null;
-    return;
-  }
-
-  let next = getNextEvent(new Date(), schedule);
-  if (!next) {
-    grid.hidden = true;
-    dateLine.hidden = true;
-    message.hidden = false;
-    message.textContent = COPY.countdownError;
-    runtime.nextEvent = null;
-    return;
-  }
-  runtime.nextEvent = next;
-  grid.hidden = false;
-  message.hidden = true;
-  dateLine.hidden = false;
-  dateLine.textContent = formatEventDate(next.instant, schedule.timeZone);
-
-  const tick = () => {
-    const now = new Date();
-    if (!runtime.nextEvent || runtime.nextEvent.instant.getTime() <= now.getTime()) {
-      runtime.nextEvent = getNextEvent(now, schedule);
-      if (runtime.nextEvent) dateLine.textContent = formatEventDate(runtime.nextEvent.instant, schedule.timeZone);
-    }
-    if (!runtime.nextEvent) { grid.hidden = true; message.hidden = false; message.textContent = COPY.countdownError; stopCountdown(); return; }
-    const parts = getCountdown(runtime.nextEvent.instant, now);
-    $("#cd-days").textContent = toFaDigits(parts.days);
-    $("#cd-hours").textContent = toFaDigits(parts.hours, { pad: 2 });
-    $("#cd-minutes").textContent = toFaDigits(parts.minutes, { pad: 2 });
-    $("#cd-seconds").textContent = toFaDigits(parts.seconds, { pad: 2 });
-  };
-  tick();
-  runtime.countdownTimer = setInterval(tick, 1000);
-}
-
 function renderFinal() {
   renderMokab();
-  renderCountdown();
   renderComing();
   const url = getAppUrl();
   $("#invite-text-preview").value = COPY.inviteBody(CONFIG.universityName, url);

@@ -546,7 +546,11 @@ function drawFooter(ctx, preset, options) {
   let drewLogo = false;
   if (logoImage && Number(logoImage.width) > 0 && Number(logoImage.height) > 0) {
     try {
-      ctx.drawImage(logoImage, markX, markY, markSize, markSize);
+      // لوگوی رسمی کشیده/له نشود: نسبت ابعاد داخل کادر ۶۲px حفظ میشود.
+      const ratio = Math.min(markSize / logoImage.width, markSize / logoImage.height);
+      const w = logoImage.width * ratio;
+      const h = logoImage.height * ratio;
+      ctx.drawImage(logoImage, markX + (markSize - w) / 2, markY + (markSize - h) / 2, w, h);
       drewLogo = true;
     } catch { /* fallback هندسی */ }
   }
@@ -556,7 +560,7 @@ function drawFooter(ctx, preset, options) {
   ctx.textBaseline = "middle";
   setFont(ctx, 800, 36, family);
   ctx.fillStyle = brand?.text ?? "#EDE8DC";
-  ctx.fillText(universityName || "دانشگاه شاندیز", 892, 1220);
+  ctx.fillText(universityName || "موسسه آموزش عالی شاندیز", 892, 1220);
   setFont(ctx, 400, 25, family);
   ctx.fillStyle = "rgba(201,162,75,0.78)";
   ctx.fillText(footerLine || "شب جمعه، موکب …", 892, 1262);
@@ -631,7 +635,7 @@ export async function ensureCardFonts(family = "Vazirmatn") {
   try {
     await Promise.all([
       document.fonts.load(`400 48px "${family}"`, "ایام فاطمیه"),
-      document.fonts.load(`600 48px "${family}"`, "دانشگاه شاندیز"),
+      document.fonts.load(`600 48px "${family}"`, "موسسه آموزش عالی شاندیز"),
       document.fonts.load(`800 48px "${family}"`, "نهضت هر شب جمعه")
     ]);
     await document.fonts.ready;

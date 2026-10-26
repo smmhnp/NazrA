@@ -19,7 +19,7 @@ const FILES = [
   "js/lib/share.js",
   "js/ui/common.js", "js/ui/toast.js", "js/ui/quiz.js",
   "js/ui/postcard.js", "js/ui/selfie.js",
-  "assets/logo.svg", "assets/icons/icon.svg", "assets/icons/icon-192.png",
+  "assets/logo.png", "assets/icons/icon.svg", "assets/icons/icon-192.png",
   "assets/icons/icon-512.png", "assets/icons/icon-maskable-512.png",
   "assets/icons/apple-touch-icon.png",
   "assets/fonts/vazirmatn/Vazirmatn-Regular.woff2",

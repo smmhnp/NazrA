@@ -47,7 +47,7 @@ test("APP_SHELL شامل فونتها، CSS، JS، لوگو و آیکونها ا
     const rel = entry === "./" ? "index.html" : entry.replace(/^\.\//, "");
     assert.ok(exists(rel), `منبع کش مفقود: ${rel}`);
   }
-  for (const needed of ["style.css", "components.css", "animations.css", "app.js", "content.js", "card-engine.js", "config.js", "logo.svg", "Vazirmatn-Regular.woff2", "Vazirmatn-SemiBold.woff2", "Vazirmatn-ExtraBold.woff2"]) {
+  for (const needed of ["style.css", "components.css", "animations.css", "app.js", "content.js", "card-engine.js", "config.js", "logo.png", "Vazirmatn-Regular.woff2", "Vazirmatn-SemiBold.woff2", "Vazirmatn-ExtraBold.woff2"]) {
     assert.ok(entries.some((e) => e.includes(needed)), `APP_SHELL فاقد ${needed}`);
   }
   assert.ok(swSource.includes("activate") && swSource.includes("caches.delete"));
@@ -113,6 +113,17 @@ test("همهٔ importهای ماژولها به فایلهای موجود اشا
     }
   }
   assert.ok(files.length >= 15);
+});
+
+test("لوگوی رسمی جایگزین شده و سکشن شمارش معکوس حذف شده است", () => {
+  assert.ok(exists("assets/logo.png"), "لوگوی پردازششده موجود است");
+  assert.ok(exists("assets/logo-source.png"), "فایل اصلی لوگو حفظ شده است");
+  assert.ok(html.includes("./assets/logo.png"));
+  assert.ok(!html.includes("logo.svg"));
+  assert.ok(!html.includes("countdown-grid"));
+  assert.ok(!html.includes("cd-seconds"));
+  assert.ok(read("css/style.css").includes(".screen--final"), "فاصلهگذاری صفحهٔ آخر");
+  assert.ok(!read("css/style.css").includes(".countdown-grid"));
 });
 
 test("ورودی فایل و پیام حریم خصوصی دقیقاً طبق الزامات است", () => {

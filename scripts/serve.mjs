@@ -61,6 +61,6 @@ const server = http.createServer((request, response) => {
 });
 
 server.listen(port, host, () => {
-  console.log(`دانشگاه شاندیز | نهضت هر شب جمعه`);
+  console.log(`موسسه آموزش عالی شاندیز | نهضت هر شب جمعه`);
   console.log(`در حال اجرا: http://localhost:${port}/  (میزبان: ${host})`);
 });

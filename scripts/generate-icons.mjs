@@ -1,5 +1,15 @@
 /**
- * generate-icons.mjs — تولید آیکونهای PNG نصب PWA از روی نشان هندسی موقت.
+ * generate-icons.mjs — آمادهسازی لوگوی رسمی و تولید آیکونهای PWA.
+ *
+ * ورودی: assets/logo-source.png (فایل اصلی ارائهشده توسط دانشگاه؛ نشان سفید روی مشکی)
+ * خروجی:
+ *   assets/logo.png                  نشان با پسزمینهٔ شفاف و رنگ کرم (مناسب تم تیره)
+ *   assets/icons/icon-192.png       آیکون نصب ۱۹۲
+ *   assets/icons/icon-512.png       آیکون نصب ۵۱۲
+ *   assets/icons/icon-maskable-512  آیکون maskable با ناحیهٔ امن
+ *   assets/icons/apple-touch-icon   آیکون ۱۸۰ برای iOS
+ *   assets/icons/icon.svg           همان آیکون ۵۱۲ در قالب SVG (base64 داخلی)
+ *
  * فقط به @napi-rs/canvas (وابستگی توسعه) نیاز دارد؛ هیچ سرویس خارجی استفاده نمیشود.
  * اجرا: npm run icons
  */
@@ -8,29 +18,74 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const outDir = path.join(root, "assets", "icons");
+const asset = (...parts) => path.join(root, "assets", ...parts);
+const sourcePath = asset("logo-source.png");
+const logoPath = asset("logo.png");
+const iconDir = asset("icons");
 
-let createCanvas;
+let createCanvas, loadImage;
 try {
-  ({ createCanvas } = await import("@napi-rs/canvas"));
+  ({ createCanvas, loadImage } = await import("@napi-rs/canvas"));
 } catch {
-  console.error("برای تولید آیکونها ابتدا «npm install» را اجرا کنید (نیاز به @napi-rs/canvas).");
+  console.error("برای تولید لوگو و آیکونها ابتدا «npm install» را اجرا کنید (نیاز به @napi-rs/canvas).");
+  process.exit(1);
+}
+if (!fs.existsSync(sourcePath)) {
+  console.error("فایل ورودی یافت نشد: assets/logo-source.png");
   process.exit(1);
 }
 
-function drawIcon(ctx, size, maskable = false) {
-  const gold = "#C9A24B";
-  ctx.fillStyle = "#0E0F12";
+const CREAM = [237, 232, 220]; // --text-primary
+const GOLD = [201, 162, 75];   // --gold
+const BG = "#0E0F12";
+
+/** تبدیل نشان سفیدرویمشکی به نشان رنگی با پسزمینهٔ شفاف. */
+async function buildTransparentLogo() {
+  const source = await loadImage(sourcePath);
+  const width = 800;
+  const height = Math.round((source.height / source.width) * width);
+  const canvas = createCanvas(width, height);
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(source, 0, 0, width, height);
+  const image = ctx.getImageData(0, 0, width, height);
+  const data = image.data;
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i], g = data[i + 1], b = data[i + 2], a = data[i + 3];
+    // چون پسزمینه مشکی و نشان سفید است، روشنایی = میزان پوشش نشان.
+    const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+    data[i] = CREAM[0];
+    data[i + 1] = CREAM[1];
+    data[i + 2] = CREAM[2];
+    data[i + 3] = Math.round(luminance * a);
+  }
+  ctx.putImageData(image, 0, 0);
+  fs.writeFileSync(logoPath, canvas.toBuffer("image/png"));
+  return await loadImage(logoPath);
+}
+
+/** رنگآمیزی مجدد نشان شفاف با حفظ آلفا. */
+function tintedMark(logo, color, width, height) {
+  const mark = createCanvas(Math.ceil(width), Math.ceil(height));
+  const ctx = mark.getContext("2d");
+  ctx.drawImage(logo, 0, 0, width, height);
+  ctx.globalCompositeOperation = "source-in";
+  ctx.fillStyle = `rgb(${color[0]},${color[1]},${color[2]})`;
+  ctx.fillRect(0, 0, width, height);
+  return mark;
+}
+
+function drawIcon(ctx, size, logo, maskable = false) {
+  ctx.fillStyle = BG;
   ctx.fillRect(0, 0, size, size);
 
   // بافت هندسی بسیار کمرنگ
   ctx.save();
-  ctx.strokeStyle = "rgba(201,162,75,0.055)";
+  ctx.strokeStyle = "rgba(201,162,75,0.05)";
   ctx.lineWidth = Math.max(1, size * 0.002);
   const step = size / 8;
   for (let x = step / 2; x < size; x += step) {
     for (let y = step / 2; y < size; y += step) {
-      const r = step * 0.22;
+      const r = step * 0.2;
       ctx.beginPath();
       ctx.moveTo(x, y - r); ctx.lineTo(x + r, y);
       ctx.lineTo(x, y + r); ctx.lineTo(x - r, y);
@@ -39,57 +94,17 @@ function drawIcon(ctx, size, maskable = false) {
   }
   ctx.restore();
 
-  const scale = maskable ? 0.7 : 1;
-  const cx = size / 2;
-  const cy = size / 2;
-  ctx.save();
-  ctx.translate(cx, cy);
-  ctx.scale(scale, scale);
-  ctx.translate(-cx, -cy);
-
-  ctx.strokeStyle = gold;
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
-
-  // دایرهٔ بیرونی
-  ctx.globalAlpha = 0.30;
-  ctx.lineWidth = size * 0.006;
-  ctx.beginPath();
-  ctx.arc(cx, cy, size * 0.40, 0, Math.PI * 2);
-  ctx.stroke();
-
-  // طاق (محراب) — نشان انتزاعی و موقت
-  ctx.globalAlpha = 1;
-  ctx.lineWidth = size * 0.014;
-  ctx.beginPath();
-  ctx.moveTo(size * 0.285, size * 0.735);
-  ctx.lineTo(size * 0.285, size * 0.455);
-  ctx.arc(cx, size * 0.455, size * 0.215, Math.PI, 0);
-  ctx.lineTo(size * 0.715, size * 0.735);
-  ctx.stroke();
-
-  ctx.globalAlpha = 0.72;
-  ctx.beginPath();
-  ctx.moveTo(size * 0.22, size * 0.735);
-  ctx.lineTo(size * 0.78, size * 0.735);
-  ctx.stroke();
-
-  // ستارهٔ هشتپر
-  ctx.globalAlpha = 1;
-  ctx.lineWidth = size * 0.011;
-  const r = size * 0.125;
-  ctx.beginPath();
-  for (let i = 0; i < 8; i += 1) {
-    const angle = (i * Math.PI) / 4 - Math.PI / 2;
-    const radius = i % 2 === 0 ? r : r * 0.46;
-    const x = cx + Math.cos(angle) * radius;
-    const y = cy - size * 0.045 + Math.sin(angle) * radius;
-    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-  }
-  ctx.closePath();
-  ctx.stroke();
-  ctx.restore();
+  // ناحیهٔ امن: در maskable نشان کوچکتر میماند تا برش دایرهای آن را نبرد.
+  const box = size * (maskable ? 0.62 : 0.78);
+  const scale = Math.min(box / logo.width, box / logo.height);
+  const w = logo.width * scale;
+  const h = logo.height * scale;
+  const mark = tintedMark(logo, GOLD, w, h);
+  ctx.drawImage(mark, (size - w) / 2, (size - h) / 2);
 }
+
+fs.mkdirSync(iconDir, { recursive: true });
+const logo = await buildTransparentLogo();
 
 const targets = [
   { name: "icon-192.png", size: 192, maskable: false },
@@ -98,10 +113,21 @@ const targets = [
   { name: "apple-touch-icon.png", size: 180, maskable: false }
 ];
 
-fs.mkdirSync(outDir, { recursive: true });
+let icon512 = null;
 for (const target of targets) {
   const canvas = createCanvas(target.size, target.size);
-  drawIcon(canvas.getContext("2d"), target.size, target.maskable);
-  fs.writeFileSync(path.join(outDir, target.name), canvas.toBuffer("image/png"));
+  drawIcon(canvas.getContext("2d"), target.size, logo, target.maskable);
+  const buffer = canvas.toBuffer("image/png");
+  fs.writeFileSync(path.join(iconDir, target.name), buffer);
+  if (target.name === "icon-512.png") icon512 = buffer;
   console.log(`✓ ${target.name} (${target.size}×${target.size})`);
 }
+
+// نسخهٔ SVG همان آیکون ۵۱۲ (برای manifest و favicon وکتورنما)
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" viewBox="0 0 512 512">
+  <title>نشان موسسه آموزش عالی شاندیز</title>
+  <image width="512" height="512" href="data:image/png;base64,${icon512.toString("base64")}"/>
+</svg>
+`;
+fs.writeFileSync(path.join(iconDir, "icon.svg"), svg);
+console.log("✓ assets/logo.png و assets/icons/icon.svg");

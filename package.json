@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "دانشگاه شاندیز | نهضت هر شب جمعه — وباپ آفلاین و RTL ایام فاطمیه",
+  "description": "موسسه آموزش عالی شاندیز | نهضت هر شب جمعه — وباپ آفلاین و RTL ایام فاطمیه",
   "scripts": {
     "start": "node scripts/serve.mjs",
     "dev": "node scripts/serve.mjs",

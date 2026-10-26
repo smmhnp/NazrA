@@ -7,9 +7,9 @@
  */
 
 export const CONFIG = {
-  universityName: "دانشگاه شاندیز",
+  universityName: "موسسه آموزش عالی شاندیز",
   programTitle: "نهضت هر شب جمعه",
-  logoPath: "./assets/logo.svg",
+  logoPath: "./assets/logo.png",
 
   // آدرس ایمیل نهضت. «TODO» یعنی تنظیم نشده → لینک mailto ساخته نمیشود.
   NEHZAT_EMAIL: "TODO",
@@ -21,7 +21,7 @@ export const CONFIG = {
   // «TODO» یعنی ساعت تأییدنشده → شمارش معکوس نمایش داده نمیشود.
   eventTime: "TODO",
 
-  // منطقه زمانی صریح (IANA). محاسبات شمارش معکوس بر اساس همین مقدار است.
+  // منطقه زمانی صریح (IANA) برای نمایش ساعت برگزاری.
   timeZone: "Asia/Tehran",
 
   // روز برگزاری: ۰=یکشنبه … ۴=پنجشنبه (شب جمعه) … ۶=شنبه.

@@ -94,7 +94,7 @@ test("مسیر کامل کاربر: آغاز → پنج دسته → متن → 
   // ۱. خوشآمدگویی
   assert.equal(visible("welcome"), true);
   assert.equal(visible("categories"), false);
-  assert.equal($("#welcome-title").textContent, "دانشگاه شاندیز");
+  assert.equal($("#welcome-title").textContent, "موسسه آموزش عالی شاندیز");
   assert.equal($("#app-header").hidden, true);
 
   click(action("start"));
@@ -246,8 +246,9 @@ test("مسیر کامل کاربر: آغاز → پنج دسته → متن → 
   assert.equal(visible("final"), true);
   assert.ok($("#mokab-address").textContent.includes("بهزودی"));
   assert.ok($("#mokab-time").textContent.includes("بهزودی"));
-  assert.equal($("#countdown-grid").hidden, true);
-  assert.equal($("#countdown-message").textContent, "زمان برگزاری بهزودی اعلام میشود");
+  assert.equal($("#countdown-grid"), null, "سکشن شمارش معکوس حذف شده است");
+  assert.equal($("#screen-final").classList.contains("screen--final"), true, "فاصلهگذاری صفحهٔ آخر");
+  assert.equal($$("#screen-final > .card").length, 2);
   assert.ok($("#mokab-timezone").textContent.includes("Asia/Tehran"));
   assert.ok($("#coming-note").textContent.includes("ثبتنام"));
 

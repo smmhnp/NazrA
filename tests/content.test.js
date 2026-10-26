@@ -65,5 +65,5 @@ test("سه قالب کارت و پیامهای آزمون تعریف شدهان�
   assert.deepEqual(CARD_TEMPLATES.map((t) => t.id), ["gold", "glow", "band"]);
   for (const t of CARD_TEMPLATES) assert.ok(t.label && t.hint);
   assert.ok(COPY.shareGuide.includes("پیوست"));
-  assert.ok(COPY.countdownUnavailable.includes("بهزودی"));
+  assert.ok(COPY.timeMissing.includes("بهزودی"));
 });

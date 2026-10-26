@@ -1,7 +1,7 @@
 /* sw.js — Service Worker نسخهدار و آفلاینمحور.            */
 /* نسخهٔ کش توسط «npm run sw:version» از روی محتوای فایلها ساخته میشود. */
 
-const CACHE_VERSION = "nazra-2a7f7e25b26c";
+const CACHE_VERSION = "nazra-53b59528fafe";
 const CACHE_NAME = `nazra-static-${CACHE_VERSION}`;
 const CACHE_PREFIX = "nazra-static-";
 
@@ -29,7 +29,7 @@ const APP_SHELL = [
   "./js/ui/quiz.js",
   "./js/ui/postcard.js",
   "./js/ui/selfie.js",
-  "./assets/logo.svg",
+  "./assets/logo.png",
   "./assets/icons/icon.svg",
   "./assets/icons/icon-192.png",
   "./assets/icons/icon-512.png",
@@ -43,7 +43,7 @@ const APP_SHELL = [
 const OFFLINE_HTML = `<!doctype html>
 <html lang="fa" dir="rtl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>آفلاین — دانشگاه شاندیز</title>
+<title>آفلاین — موسسه آموزش عالی شاندیز</title>
 <style>
 body{margin:0;min-height:100dvh;display:grid;place-items:center;background:#0E0F12;color:#EDE8DC;
 font-family:Vazirmatn,Tahoma,system-ui,sans-serif;padding:24px;text-align:center}
