@@ -196,8 +196,19 @@ Apache/Nginx، S3+CloudFront و…) قرار دهید. فقط الزامی اس�
   source: "TODO — منبع دقیق و قابل بررسی",
   sourceUrl: null,          // فقط http(s) معتبر پذیرفته میشود
   verified: false,
-  sourceType: "placeholder" // placeholder | editorial | app-doc
+  sourceType: "placeholder" // placeholder | editorial | app-doc | sourced
 }
+```
+
+برای متن **منقول با منبع معتبر** (مثلاً حدیث، آیه، شعر، کتاب) از تابع `sourced` استفاده کنید
+تا برچسب درست «متن با منبع مشخص» نمایش داده شود (**نه** «نقل قول نیست»):
+
+```js
+sourced("prayer", 1,
+  "متن دقیق …",
+  "نام کتاب، ناشر، جلد/صفحه",   // منبع دقیق و قابل بررسی
+  "https://example.org/book"    // یا null
+)
 ```
 
 و هر پرسش: `{ id, category, question, options[4], correctIndex, explanation, source, sourceUrl, verified, sourceType }`.
@@ -272,6 +283,7 @@ Apache/Nginx، S3+CloudFront و…) قرار دهید. فقط الزامی اس�
 | `tests/selection.test.js` | عدم تکرار بلافاصله، اولویت متنهای تأییدشده، بازنشانی تاریخچه پس از اتمام، حالت تکرکورد |
 | `tests/quiz.test.js` | سه پرسش متمایز از همان دسته، امتیاز فقط از `correctIndex`، پیام تشویقی متناسب |
 | `tests/storage-share.test.js` | JSON خراب، نبود localStorage، پایداری پیشرفت، `mailto` با `encodeURIComponent`، ترتیب Web Share → دانلود → ایمیل، امتناع از لینک ناقص، کپی و دعوت |
+| `tests/sourced.test.js` | متن منقول با منبع معتبر، برچسب و یادداشت صحیح در رابط (jsdom) |
 | `tests/card-engine.test.js` | **رندر واقعی با Canvas**: ۳ قالب × ۳ نوع کارت، محدودهٔ امن متن، آینه/زوم تصویر، `wrapText`/`fitTextLayout`، **PNG دقیقاً ۱۰۸۰×۱۳۵۰**، خطاهای بوم |
 | `tests/integrity.test.js` | وجود تمام منابع، مانیفست معتبر، `APP_SHELL` کامل، هماهنگی هش نسخهٔ کش، تطابق `data-action`ها با کنترلکنندهها، نبود لینک/CDN خارجی، صحت `import`ها |
 | `tests/flow.test.js` | **jsdom + Canvas واقعی**: مسیر کامل از خوشآمد تا پایان، پنج دسته، «متن دیگر»، آزمون ۳/۴ گزینه و امتیاز ۳/۳، ساخت ۳ نوع کارت، سلفی با عکس/زوم/آینه، دانلود/اشتراک، دعوت و بازگشت — بدون هیچ خطای JavaScript |

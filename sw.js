@@ -1,7 +1,7 @@
 /* sw.js — Service Worker نسخهدار و آفلاینمحور.            */
 /* نسخهٔ کش توسط «npm run sw:version» از روی محتوای فایلها ساخته میشود. */
 
-const CACHE_VERSION = "nazra-fbe905df2b87";
+const CACHE_VERSION = "nazra-1fe8754456c7";
 const CACHE_NAME = `nazra-static-${CACHE_VERSION}`;
 const CACHE_PREFIX = "nazra-static-";
 

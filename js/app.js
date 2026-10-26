@@ -244,6 +244,9 @@ function renderText(record) {
   if (record.needsReview) {
     badge.textContent = COPY.badgeTodo;
     badge.className = "badge badge--todo";
+  } else if (record.sourceType === "sourced") {
+    badge.textContent = COPY.badgeSourced;
+    badge.className = "badge badge--editorial";
   } else if (record.sourceType === "editorial") {
     badge.textContent = COPY.badgeEditorial;
     badge.className = "badge badge--editorial";
@@ -269,6 +272,7 @@ function renderText(record) {
   }
   const note = $("#text-note");
   note.textContent = record.needsReview ? COPY.textTodoNote
+    : record.sourceType === "sourced" ? COPY.textSourcedNote
     : record.sourceType === "editorial" ? COPY.textEditorialNote : "";
   note.hidden = !note.textContent;
 }

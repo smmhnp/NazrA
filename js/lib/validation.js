@@ -4,7 +4,7 @@
  */
 import { isSafeHttpUrl, isTodo } from "./utils.js";
 
-const SOURCE_TYPES = new Set(["placeholder", "editorial", "app-doc"]);
+const SOURCE_TYPES = new Set(["placeholder", "editorial", "app-doc", "sourced"]);
 
 function hasText(value) {
   return typeof value === "string" && value.trim().length > 0;

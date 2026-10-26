@@ -61,6 +61,24 @@ test("اعتبارسنجی رکوردهای ناقص و متناقض را رد �
   assert.equal(validateTextRecord({ id: "x", category: "scientific", text: "متن", source: "منبع", sourceUrl: "https://example.org/a", verified: false }).record.sourceUrl, "https://example.org/a");
 });
 
+test("رکورد متن منقول (sourced) با منبع دقیق پذیرفته و بدون برچسب TODO میشود", () => {
+  const record = validateTextRecord({
+    id: "sourced_prayer_001", category: "prayer",
+    text: "متن دقیق با مأخذ", source: "نام کتاب، ناشر، صفحهٔ ۱۲۳",
+    sourceUrl: "https://example.org/book", verified: true, sourceType: "sourced"
+  });
+  assert.equal(record.valid, true);
+  assert.equal(record.needsReview, false);
+  assert.equal(record.record.sourceType, "sourced");
+  assert.equal(record.record.sourceUrl, "https://example.org/book");
+  // منبع نامعتبر یا تأییدنشده همچنان برچسب میخورد.
+  assert.equal(validateTextRecord({
+    id: "sourced_x", category: "prayer", text: "متن",
+    source: "TODO — منبع", verified: true, sourceType: "sourced"
+  }).valid, false);
+  assert.ok(COPY.badgeSourced.includes("منبع"));
+});
+
 test("سه قالب کارت و پیامهای آزمون تعریف شدهاند", () => {
   assert.deepEqual(CARD_TEMPLATES.map((t) => t.id), ["gold", "glow", "band"]);
   for (const t of CARD_TEMPLATES) assert.ok(t.label && t.hint);
