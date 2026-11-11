@@ -406,20 +406,17 @@ function renderMokab() {
 
 function renderFinal() {
   renderMokab();
-  const url = getAppUrl();
-  $("#invite-text-preview").value = COPY.inviteBody(CONFIG.universityName, url);
-  $("#invite-link").value = url;
+  $("#invite-text-preview").value = COPY.inviteBody(CONFIG.universityName);
 }
 
 async function handleInvite(button) {
-  const url = getAppUrl();
-  const text = COPY.inviteBody(CONFIG.universityName, url);
+  // The invitation carries no app link.
+  const text = COPY.inviteBody(CONFIG.universityName);
   setLoading(button, true, "در حال آمادهسازی…");
   try {
     const result = await inviteFriend({
       title: COPY.inviteTitle,
       text,
-      url: url || undefined,
       onFallback: () => { $("#invite-fallback").hidden = false; }
     });
     if (result.outcome === "shared") toast.success(COPY.inviteShared);
@@ -473,10 +470,6 @@ const ACTIONS = {
   "copy-invite-text"() {
     copyText($("#invite-text-preview").value).then((ok) =>
       toast[ok ? "success" : "error"](ok ? COPY.inviteCopied : COPY.copyFailed));
-  },
-  "copy-invite-link"() {
-    copyText($("#invite-link").value).then((ok) =>
-      toast[ok ? "success" : "error"](ok ? COPY.linkCopied : COPY.copyFailed));
   },
   restart() {
     clearCard();
