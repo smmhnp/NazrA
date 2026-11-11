@@ -38,8 +38,8 @@ test("متن sourced برچسب «متن با منبع مشخص» و یاددا�
   const content = await import("../js/content.js");
   content.TEXT_RECORDS.length = 0;
   content.TEXT_RECORDS.push({
-    id: "sourced_prayer_001",
-    category: "prayer",
+    id: "sourced_sayings_001",
+    category: "sayings",
     text: "متن آزمایشی با منبع دقیق و قابل بررسی.",
     source: "نام کتاب، ناشر، صفحهٔ ۱۲۳",
     sourceUrl: null,
@@ -51,12 +51,11 @@ test("متن sourced برچسب «متن با منبع مشخص» و یاددا�
   const click = (selector) => document.querySelector(selector)
     .dispatchEvent(new window.MouseEvent("click", { bubbles: true, cancelable: true }));
   click('[data-action="start"]');
-  click('[data-category-id="prayer"]');
 
   assert.equal(document.querySelector("#text-body").textContent, "متن آزمایشی با منبع دقیق و قابل بررسی.");
-  assert.equal(document.querySelector("#text-badge").textContent, "متن با منبع مشخص");
+  assert.equal(document.querySelector("#text-badge").hidden, true);
   assert.equal(document.querySelector("#text-badge").classList.contains("badge--todo"), false);
   assert.equal(document.querySelector("#text-source").textContent, "نام کتاب، ناشر، صفحهٔ ۱۲۳");
-  assert.ok(document.querySelector("#text-note").textContent.includes("فرد آگاه"));
+  assert.equal(document.querySelector("#text-note").hidden, true);
   assert.deepEqual(jsdomErrors.filter((m) => !/Not implemented/i.test(m)), []);
 });

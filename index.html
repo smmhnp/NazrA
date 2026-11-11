@@ -64,10 +64,10 @@
 
     <div class="stepper" id="stepper" hidden>
       <div class="stepper__meta">
-        <span id="stepper-label">گام ۱ از ۶</span>
+        <span id="stepper-label">گام ۱ از ۳</span>
         <span id="stepper-name">آغاز</span>
       </div>
-      <div class="stepper__track" role="progressbar" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1" aria-label="پیشرفت برنامه" id="stepper-progress">
+      <div class="stepper__track" role="progressbar" aria-valuemin="1" aria-valuemax="3" aria-valuenow="1" aria-label="پیشرفت برنامه" id="stepper-progress">
         <div class="stepper__fill" id="stepper-fill"></div>
       </div>
     </div>
@@ -88,14 +88,13 @@
           <p class="eyebrow" id="welcome-eyebrow">ایام فاطمیه</p>
           <h1 class="welcome__title" id="welcome-title" tabindex="-1">موسسه آموزش عالی شاندیز</h1>
           <p class="welcome__program" id="welcome-program">نهضت هر شب جمعه</p>
-          <p class="welcome__subtitle">تجربهای کوتاه، آفلاین و آرام برای همراهی با ایام فاطمیه؛ از تأمل در متن تا ساخت کارت و پیوستن به موکب شب جمعه.</p>
 
           <div class="card welcome__goal">
             <div class="card__head">
               <svg class="icon" aria-hidden="true"><use href="#i-star"></use></svg>
               <h2>هدف معنوی برنامه</h2>
             </div>
-            <p>فرصتی برای مکث، یادآوری و همدلی؛ با متنهایی که مسئولانه و بیدلیل به کسی نسبت داده نشدهاند، و کارتهایی که میتوانید با دوستانتان شریک شوید.</p>
+            <p>گامی کوچک برای خدمت به یکدیگر و زنده نگه‌داشتن یاد امام حسین(ع)؛ در امتداد آرمان «هرشب جمعه مثل اربعین»، به نیت فرج امام زمان(عج).</p>
           </div>
 
           <div class="welcome__actions">
@@ -108,7 +107,7 @@
             </button>
           </div>
 
-          <p class="welcome__footnote">بدون نیاز به اینترنت، بدون ارسال عکس یا اطلاعات به هیچ سروری.</p>
+          <p class="welcome__footnote">طراحی شده برای ایام فاطمیه توسط گروه کامپیوتر دانشگاه شاندیز</p>
         </div>
       </section>
 
@@ -131,10 +130,9 @@
       <!-- 3. Text -->
       <section class="screen" id="screen-text" data-screen="text" aria-labelledby="text-title" hidden>
         <header class="screen__head">
-          <p class="eyebrow">گام سوم</p>
           <h1 id="text-title" tabindex="-1">متنی برای تأمل</h1>
           <div class="row row--wrap">
-            <span class="chip chip--static" id="text-category-label">دسته</span>
+            <span class="chip chip--static" id="text-category-label" hidden>دسته</span>
             <span class="badge" id="text-badge">نمونهٔ نیازمند تأیید منبع</span>
           </div>
         </header>
@@ -150,34 +148,26 @@
         </article>
 
         <div class="screen__actions sticky-actions">
-          <button class="btn btn--primary btn--lg" type="button" data-action="to-activities">
+          <button class="btn btn--primary btn--lg" type="button" data-action="go-final">
             <span>ادامه</span>
             <svg class="icon icon--flip" aria-hidden="true"><use href="#i-chevron"></use></svg>
           </button>
-          <div class="btn-row">
-            <button class="btn btn--secondary" type="button" data-action="another-text">
-              <svg class="icon" aria-hidden="true"><use href="#i-refresh"></use></svg>
-              متن دیگر
-            </button>
-            <button class="btn btn--ghost" type="button" data-action="change-category">تغییر دسته</button>
-          </div>
+          <button class="btn btn--secondary" type="button" data-action="another-text">
+            <svg class="icon" aria-hidden="true"><use href="#i-refresh"></use></svg>
+            متن دیگر
+          </button>
         </div>
       </section>
 
       <!-- 4. Activities -->
       <section class="screen" id="screen-activities" data-screen="activities" aria-labelledby="activities-title" hidden>
         <header class="screen__head">
-          <p class="eyebrow">گام چهارم</p>
+          <p class="eyebrow">گام سوم</p>
           <h1 id="activities-title" tabindex="-1">یک فعالیت انتخاب کنید</h1>
           <p class="screen__lead">همهٔ فعالیتها اختیاریاند؛ هر زمان خواستید میتوانید رد کنید و ادامه دهید.</p>
         </header>
 
         <div class="activity-list">
-          <button class="activity-card" type="button" data-action="choose-activity" data-activity="quiz">
-            <span class="activity-card__icon"><svg class="icon" aria-hidden="true"><use href="#i-quiz"></use></svg></span>
-            <span class="activity-card__text"><strong>پرسش و پاسخ</strong><small>سه پرسش چهارگزینهای کوتاه</small></span>
-            <svg class="icon activity-card__arrow icon--flip" aria-hidden="true"><use href="#i-chevron"></use></svg>
-          </button>
           <button class="activity-card" type="button" data-action="choose-activity" data-activity="postcard">
             <span class="activity-card__icon"><svg class="icon" aria-hidden="true"><use href="#i-postcard"></use></svg></span>
             <span class="activity-card__text"><strong>ساخت کارتپستال</strong><small>متن منتخب، نام شما و سه قالب</small></span>
@@ -242,7 +232,7 @@
       <!-- 5b. Postcard -->
       <section class="screen" id="screen-postcard" data-screen="postcard" aria-labelledby="postcard-title" hidden>
         <header class="screen__head">
-          <p class="eyebrow">فعالیت ۲ از ۳</p>
+          <p class="eyebrow">فعالیت ۱ از ۲</p>
           <h1 id="postcard-title" tabindex="-1">ساخت کارتپستال</h1>
           <p class="screen__lead">متن را ویرایش کنید، نامتان را بنویسید (اختیاری) و یکی از سه قالب را برگزینید.</p>
         </header>
@@ -277,7 +267,7 @@
       <!-- 5c. Selfie card -->
       <section class="screen" id="screen-selfie" data-screen="selfie" aria-labelledby="selfie-title" hidden>
         <header class="screen__head">
-          <p class="eyebrow">فعالیت ۳ از ۳</p>
+          <p class="eyebrow">فعالیت ۲ از ۲</p>
           <h1 id="selfie-title" tabindex="-1">ساخت سلفیکارت</h1>
           <p class="screen__lead">عکسی بگیرید یا از گالری انتخاب کنید؛ جابهجا کنید، زوم کنید و قابی بسازید.</p>
         </header>
@@ -341,7 +331,7 @@
       <!-- 6. Output and sharing -->
       <section class="screen" id="screen-output" data-screen="output" aria-labelledby="output-title" hidden>
         <header class="screen__head">
-          <p class="eyebrow">گام پنجم</p>
+          <p class="eyebrow">گام چهارم</p>
           <h1 id="output-title" tabindex="-1">خروجی شما</h1>
           <p class="screen__lead">کارت ساختهشده را دانلود یا اشتراکگذاری کنید. ادامه بدون کارت نیز ممکن است.</p>
         </header>
@@ -375,22 +365,10 @@
       <!-- 7. Final screen and invitation -->
       <section class="screen screen--final" id="screen-final" data-screen="final" aria-labelledby="final-title" hidden>
         <header class="screen__head screen__head--center">
-          <p class="eyebrow">گام ششم</p>
           <h1 id="final-title" tabindex="-1">تا دیداری دیگر</h1>
-          <p class="final-message" id="final-message">هر شب جمعه، فرصتی تازه برای به یاد آوردن، همدلی و کنار هم بودن است. این تجربهٔ کوتاه را با دلی آرام به پایان ببرید.</p>
+          <p class="final-message" id="final-message">اگر مایل هستی در گسترش این حرکت سهیم باشی و دانش، تجربه یا آموخته‌ای را برای رشد دیگران به اشتراک بگذاری، با ما همراه شو.</p>
+          <p class="final-message">این گامی کوچک در مسیر خدمت به یکدیگر و زنده نگه‌داشتن یاد امام حسین(ع) است؛ در امتداد آرمان «هرشب جمعه مثل اربعین»، به نیت فرج امام زمان(عج).</p>
         </header>
-
-        <div class="card mokab-card">
-          <div class="card__head">
-            <svg class="icon" aria-hidden="true"><use href="#i-star"></use></svg>
-            <h2 id="mokab-title">موکب شب جمعه</h2>
-          </div>
-          <ul class="detail-list">
-            <li><svg class="icon" aria-hidden="true"><use href="#i-location"></use></svg><span id="mokab-address">آدرس دقیق موکب بهزودی اعلام میشود.</span></li>
-            <li><svg class="icon" aria-hidden="true"><use href="#i-clock"></use></svg><span id="mokab-time">ساعت برگزاری بهزودی اعلام میشود.</span></li>
-            <li><svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg><span id="mokab-timezone">منطقهٔ زمانی: Asia/Tehran</span></li>
-          </ul>
-        </div>
 
         <div class="card invite-card">
           <div class="card__head">
