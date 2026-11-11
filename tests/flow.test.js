@@ -143,8 +143,9 @@ test("مسیر کامل کاربر: آغاز → پنج دسته → متن → 
   setGlobal("navigator", { onLine: true, clipboard: { writeText: async () => {} } });
   click(action("invite-friend"));
   await waitFor(() => !$("#invite-fallback").hidden);
-  assert.ok($("#invite-link").value === "https://example.test/NazrA/");
-  assert.ok($("#invite-text-preview").value.includes("https://example.test/NazrA/"));
+  assert.equal($("#invite-link"), null, "لینک وب‌اپ از دعوت‌نامه حذف شده است");
+  assert.ok($("#invite-text-preview").value.length > 10);
+  assert.equal($("#invite-text-preview").value.includes("http"), false);
 
   // Restart
   click(action("restart"));
