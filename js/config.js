@@ -2,7 +2,7 @@
 
 export const CONFIG = {
   universityName: "موسسه آموزش عالی شاندیز",
-  programTitle: "نهضت هر شب جمعه",
+  programTitle: "نهضت هر شب جمعه مثل اربعین",
   logoPath: "./assets/logo.png",
 
   // Program email; TODO means no mailto link is built.
@@ -37,7 +37,7 @@ export const CONFIG = {
   // Fixed card footer line; no real location is claimed.
   card: {
     footerLine: "شب جمعه، موکب …",
-    headerLine: "ایام فاطمیه • نهضت هر شب جمعه",
+    headerLine: "ایام فاطمیه • نهضت هر شب جمعه مثل اربعین",
     fontFamily: "Vazirmatn"
   },
 
