@@ -95,144 +95,32 @@ test("مسیر کامل کاربر: آغاز → پنج دسته → متن → 
   assert.equal($("#app-header").hidden, true);
 
   click(action("start"));
-  assert.equal(visible("categories"), true);
-  assert.equal($$("#categories-grid .category-card").length, 5);
-
-  // 2. All five categories
-  for (const category of CATEGORIES) {
-    click($(`[data-category-id="${category.id}"]`));
-    assert.equal(visible("text"), true, `دستهٔ ${category.id}`);
-    assert.equal($("#text-category-label").textContent, category.title);
-    const body = $("#text-body").textContent;
-    assert.ok(TEXT_RECORDS.some((r) => r.category === category.id && r.text === body), "متن از دستهٔ صحیح");
-    assert.ok($("#text-source").textContent.length > 5);
-    assert.ok($("#text-badge").textContent.length > 3, "برچسب صحت محتوا");
-    click(action("change-category"));
-    assert.equal(visible("categories"), true);
-  }
+  // 2. Single category: start goes straight to the text
+  assert.equal(visible("categories"), false);
+  assert.equal(visible("text"), true);
+  assert.equal(CATEGORIES.length, 1);
+  assert.equal(action("change-category"), null);
+  assert.ok(TEXT_RECORDS.some((r) => r.text === $("#text-body").textContent));
+  assert.ok($("#text-source").textContent.length > 5);
+  assert.equal($("#text-badge").hidden, true);
 
   // 3. Another text never repeats the current one
-  click($('[data-category-id="scientific"]'));
   let previous = $("#text-body").textContent;
   for (let i = 0; i < 12; i += 1) {
     click(action("another-text"));
     const current = $("#text-body").textContent;
     assert.notEqual(current, previous, "تکرار بلافاصلهٔ متن");
-    assert.ok(TEXT_RECORDS.some((r) => r.category === "scientific" && r.text === current));
+    assert.ok(TEXT_RECORDS.some((r) => r.category === "sayings" && r.text === current));
     previous = current;
   }
 
-  // 4. Activities and the always-available skip button
-  click(action("to-activities"));
-  assert.equal(visible("activities"), true);
-  assert.equal($$('#screen-activities [data-action="skip-to-output"]').length, 1);
-  assert.equal($$('[data-action="choose-activity"]').length, 3);
-
-  // 5. Quiz: three questions, four options, data-driven score
-  click($('[data-activity="quiz"]'));
-  assert.equal(visible("quiz"), true);
-  assert.equal($$('#screen-quiz [data-action="skip-to-output"]').length, 1);
-  for (let step = 1; step <= 3; step += 1) {
-    assert.equal($("#quiz-progress").textContent.includes(`پرسش ${"۰۱۲۳"[step]} از ۳`), true);
-    assert.equal($$("#quiz-options .quiz-option").length, 4);
-    const questionText = $("#quiz-question").textContent;
-    const record = QUESTION_RECORDS.find((q) => q.question === questionText);
-    assert.ok(record, "صورت پرسش از content.js");
-    click($(`[data-option-index="${record.correctIndex}"]`));
-    assert.equal($("#quiz-feedback").hidden, false);
-    assert.equal($("#quiz-feedback-title").textContent, "پاسخ درست");
-    assert.ok($("#quiz-feedback-source").textContent.length > 3);
-    click($("#quiz-next"));
-  }
-  assert.equal($("#quiz-result").hidden, false);
-  assert.ok($("#quiz-score").textContent.includes("۳ از ۳"), `امتیاز: ${$("#quiz-score").textContent}`);
-
-  // 6. Build the quiz card and reach the output
-  click($("#quiz-make-card"));
-  await waitFor(() => visible("output"));
-  assert.equal($("#output-empty").hidden, true);
-  assert.equal($("#output-card-buttons").hidden, false);
-  assert.ok($("#output-card-meta").textContent.includes("۱۰۸۰×۱۳۵۰"));
-  assert.ok($("#output-card-preview").getAttribute("src"));
-
-  // 7. Postcard: three templates, optional name, preview, build
-  click(action("make-another-card"));
-  click($('[data-activity="postcard"]'));
-  assert.equal(visible("postcard"), true);
-  assert.equal($$("#postcard-templates .chip").length, 3);
-  const postcardText = $("#postcard-text");
-  assert.ok(postcardText.value.length > 5, "متن منتخب بهصورت خودکار قرار گرفته است");
-  postcardText.value = "متنی تازه برای کارتپستال، نوشتهشده توسط کاربر.";
-  postcardText.dispatchEvent(new window.Event("input", { bubbles: true }));
-  $("#postcard-name").value = "";
-  click($('#postcard-templates [data-template-id="band"]'));
-  assert.equal($('#postcard-templates [data-template-id="band"]').getAttribute("aria-pressed"), "true");
-  click($("#postcard-make"));
-  await waitFor(() => visible("output"));
-
-  // 8. Selfie card: build is disabled without a photo, skipping still works
-  click(action("make-another-card"));
-  click($('[data-activity="selfie"]'));
-  assert.equal(visible("selfie"), true);
-  assert.equal($("#selfie-make").disabled, true);
-  assert.ok($("#selfie-privacy").textContent.includes("هیچ سروری"));
-  assert.equal($$("#selfie-templates .chip").length, 3);
-  click($('#selfie-templates [data-template-id="glow"]'));
-  click($('[data-ui-action="selfie-flip"]'));
-  assert.equal($("#selfie-flip").getAttribute("aria-pressed"), "true");
-  click($('[data-ui-action="selfie-reset"]'));
-  assert.equal($("#selfie-flip").getAttribute("aria-pressed"), "false");
-  assert.equal($$('#screen-selfie [data-action="skip-to-output"]').length, 1);
-
-  // Load a local photo (simulate createImageBitmap, no network request)
-  const sourceCanvas = createCanvas(600, 800);
-  const sctx = sourceCanvas.getContext("2d");
-  sctx.fillStyle = "#3A4A5A"; sctx.fillRect(0, 0, 600, 800);
-  const localImage = await loadNapiImage(sourceCanvas.toBuffer("image/png"));
-  setGlobal("createImageBitmap", async () => localImage);
-  const fileInput = $("#selfie-file");
-  Object.defineProperty(fileInput, "files", {
-    configurable: true,
-    value: [{ name: "selfie.png", type: "image/png", size: 2048 }]
-  });
-  fileInput.dispatchEvent(new window.Event("change", { bubbles: true }));
-  await waitFor(() => !$("#selfie-make").disabled);
-  assert.ok($("#selfie-status").textContent.length > 3);
-  assert.equal($("#selfie-empty").hidden, true);
-
-  // Wheel zoom and pointer panning
-  const preview = $("#selfie-preview");
-  preview.dispatchEvent(new window.WheelEvent("wheel", { deltaY: -300, bubbles: true, cancelable: true }));
-  assert.ok(Number($("#selfie-zoom").value) > 1, "زوم با چرخ ماوس");
-  const pointer = (type, x, y) => {
-    const event = new window.MouseEvent(type, { clientX: x, clientY: y, bubbles: true });
-    Object.defineProperty(event, "pointerId", { value: 1 });
-    return event;
-  };
-  preview.dispatchEvent(pointer("pointerdown", 100, 100));
-  preview.dispatchEvent(pointer("pointermove", 130, 120));
-  preview.dispatchEvent(pointer("pointerup", 130, 120));
-  click($('[data-ui-action="selfie-flip"]'));
-
-  click($("#selfie-make"));
-  await waitFor(() => visible("output"));
-  assert.equal($("#output-empty").hidden, true);
-  assert.ok($("#output-card-preview").getAttribute("src"));
-
-  // Download and share (supported/unsupported paths) without errors
-  click(action("download-card"));
-  const fakeNavigator = {
-    onLine: true,
-    canShare: () => false,
-    share: async () => {},
-    clipboard: { writeText: async () => {} }
-  };
-  setGlobal("navigator", fakeNavigator);
-  click(action("share-card"));
-  await waitFor(() => !$("#output-guide").hidden);
-  assert.ok($("#output-guide").textContent.includes("پیوست"));
-
-  click($('#screen-output [data-action="go-final"]'));
+  // 4. No activities: the text screen continues straight to the final screen
+  assert.equal(action("to-activities"), null);
+  click($('#screen-text [data-action="go-final"]'));
+  assert.equal(visible("final"), true);
+  assert.equal(visible("activities"), false);
+  assert.ok($("#screen-final").textContent.includes("هرشب جمعه مثل اربعین"));
+  assert.equal($("#stepper").hidden, true, "نشانگر گام نمایش داده نمی‌شود");
 
   // 9. Skip directly from activities and return to the output
   click(action("home"));
@@ -241,12 +129,10 @@ test("مسیر کامل کاربر: آغاز → پنج دسته → متن → 
 
   // 10. Final screen: TODO settings and removed sections
   assert.equal(visible("final"), true);
-  assert.ok($("#mokab-address").textContent.includes("بهزودی"));
-  assert.ok($("#mokab-time").textContent.includes("بهزودی"));
   assert.equal($("#countdown-grid"), null, "سکشن شمارش معکوس حذف شده است");
   assert.equal($("#screen-final").classList.contains("screen--final"), true, "فاصلهگذاری صفحهٔ آخر");
-  assert.equal($$("#screen-final > .card").length, 2);
-  assert.ok($("#mokab-timezone").textContent.includes("Asia/Tehran"));
+  assert.equal($$("#screen-final > .card").length, 1);
+  assert.equal($("#screen-final .mokab-card"), null, "کادر موکب حذف شده است");
   assert.equal($("#coming-button"), null, "دکمهٔ میآیم حذف شده است");
   assert.equal($("#coming-note"), null, "یادداشت میآیم حذف شده است");
   assert.ok($$("#screen-final .btn--primary").length === 0, "هیچ دکمهٔ اصلی در صفحهٔ آخر نیست");

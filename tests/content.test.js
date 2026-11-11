@@ -29,7 +29,6 @@ test("همهٔ پرسشها چهار گزینه و اندیس پاسخ معتب�
 
 test("محتوای TODO بهعنوان تأییدشده معرفی نمیشود", () => {
   const todos = result.texts.filter((t) => t.sourceType === "placeholder");
-  assert.ok(todos.length >= 15);
   for (const todo of todos) {
     assert.equal(todo.verified, false);
     assert.equal(todo.needsReview, true);

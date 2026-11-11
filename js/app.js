@@ -25,13 +25,13 @@ const WEEKDAYS = ["یکشنبه", "دوشنبه", "سهشنبه", "چهارشن�
 const SCREEN_META = {
   welcome:    { step: 1, label: "آغاز" },
   categories: { step: 2, label: "انتخاب دسته" },
-  text:       { step: 3, label: "متن" },
-  activities: { step: 4, label: "فعالیتها" },
-  quiz:       { step: 4, label: "پرسش و پاسخ" },
-  postcard:   { step: 4, label: "کارتپستال" },
-  selfie:     { step: 4, label: "سلفیکارت" },
-  output:     { step: 5, label: "خروجی" },
-  final:      { step: 6, label: "پایان" }
+  text:       { step: 2, label: "متن" },
+  activities: { step: 3, label: "فعالیتها" },
+  quiz:       { step: 3, label: "پرسش و پاسخ" },
+  postcard:   { step: 3, label: "کارتپستال" },
+  selfie:     { step: 3, label: "سلفیکارت" },
+  output:     { step: 4, label: "خروجی" },
+  final:      { step: 3, label: "پایان" }
 };
 
 const toast = createToaster({ root: $("#toast-region"), statusRoot: $("#sr-status") });
@@ -153,6 +153,8 @@ const activityModules = { quiz: quizUI, postcard: postcardUI, selfie: selfieUI }
 
 function showScreen(name, { persist = true, focus = true } = {}) {
   if (!SCREEN_META[name]) name = "welcome";
+  // Single category: skip the category picker and go straight to the text.
+  if (name === "categories" && CATEGORIES.length === 1) { selectCategory(CATEGORIES[0].id); return; }
   const previous = runtime.currentScreen;
   if (previous && previous !== name && activityModules[previous]) activityModules[previous].leave?.();
 
@@ -168,10 +170,10 @@ function showScreen(name, { persist = true, focus = true } = {}) {
   const header = $("#app-header");
   const stepper = $("#stepper");
   if (header) header.hidden = name === "welcome";
-  if (stepper) stepper.hidden = name === "welcome";
-  $("#stepper-label").textContent = `گام ${toFaDigits(meta.step)} از ${toFaDigits(6)}`;
+  if (stepper) stepper.hidden = true; // Step indicator is no longer shown.
+  $("#stepper-label").textContent = `گام ${toFaDigits(meta.step)} از ${toFaDigits(3)}`;
   $("#stepper-name").textContent = meta.label;
-  $("#stepper-fill").style.width = `${(meta.step / 6) * 100}%`;
+  $("#stepper-fill").style.width = `${(meta.step / 3) * 100}%`;
   $("#stepper-progress").setAttribute("aria-valuenow", String(meta.step));
 
   if (name === "text") renderText(runtime.currentText);
@@ -197,7 +199,9 @@ function updateResumeButton() {
 }
 
 function resumeFlow() {
-  const step = S.step && SCREEN_META[S.step] ? S.step : "welcome";
+  let step = S.step && SCREEN_META[S.step] ? S.step : "welcome";
+  // Activities are no longer offered; saved sessions from those screens go to the final screen.
+  if (["activities", "quiz", "postcard", "selfie", "output"].includes(step)) step = "final";
   if (step !== "welcome" && !S.category) { showScreen("categories"); return; }
   if (["text", "activities", "quiz", "postcard", "selfie", "output", "final"].includes(step) && !runtime.currentText) {
     const records = getTextsByCategory(validated.texts, S.category);
@@ -228,6 +232,7 @@ function renderText(record) {
     body.textContent = COPY.textEmpty;
     $("#text-badge").textContent = COPY.badgeTodo;
     $("#text-badge").className = "badge badge--todo";
+    $("#text-badge").hidden = false;
     $("#text-source").textContent = COPY.sourceMissing;
     $("#text-source-link").hidden = true;
     $("#text-note").hidden = true;
@@ -250,6 +255,9 @@ function renderText(record) {
     badge.textContent = COPY.badgeAppDoc;
     badge.className = "badge";
   }
+
+  // Sourced texts show no badge; the source line below is enough.
+  badge.hidden = !record.needsReview && record.sourceType === "sourced";
 
   body.textContent = record.text;
   body.classList.toggle("is-long", record.text.length > 200);
@@ -380,6 +388,8 @@ async function shareCard(button) {
 /* ------------------------------------------------------------------ */
 
 function renderMokab() {
+  // The mokab card was removed from the final screen; nothing to render without it.
+  if (!$("#mokab-address")) return;
   const address = $("#mokab-address");
   const time = $("#mokab-time");
   const timezone = $("#mokab-timezone");

@@ -17,7 +17,7 @@ test("برای هر دسته سه پرسش متمایز از همان دسته �
 });
 
 test("امتیاز فقط از correctIndex دادهها محاسبه میشود", () => {
-  const sample = questions.filter((q) => q.category === "scientific").slice(0, 3);
+  const sample = questions.filter((q) => q.category === "sayings").slice(0, 3);
   const allCorrect = scoreQuiz(sample, sample.map((q) => q.correctIndex));
   assert.deepEqual({ correct: allCorrect.correct, total: allCorrect.total, percent: allCorrect.percent }, { correct: 3, total: 3, percent: 100 });
   const mixed = scoreQuiz(sample, [sample[0].correctIndex, (sample[1].correctIndex + 1) % 4, null]);
