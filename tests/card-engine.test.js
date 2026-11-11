@@ -22,8 +22,8 @@ try {
 const brand = { background: "#0E0F12", surface: "#16181D", text: "#EDE8DC", gold: "#C9A24B" };
 const baseOptions = {
   universityName: "موسسه آموزش عالی شاندیز",
-  programTitle: "نهضت هر شب جمعه",
-  headerLine: "ایام فاطمیه • نهضت هر شب جمعه",
+  programTitle: "نهضت هر شب جمعه مثل اربعین",
+  headerLine: "ایام فاطمیه • نهضت هر شب جمعه مثل اربعین",
   footerLine: "شب جمعه، موکب …",
   brand,
   fontFamily: "Vazirmatn"

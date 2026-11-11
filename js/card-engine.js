@@ -553,7 +553,7 @@ function drawFooter(ctx, preset, options) {
   setFont(ctx, 400, 23, family);
   ctx.fillStyle = "rgba(170,166,157,0.72)";
   ctx.textAlign = "left";
-  ctx.fillText(programTitle || "نهضت هر شب جمعه", 120, 1226);
+  ctx.fillText(programTitle || "نهضت هر شب جمعه مثل اربعین", 120, 1226);
   ctx.restore();
 }
 
@@ -617,7 +617,7 @@ export async function ensureCardFonts(family = "Vazirmatn") {
     await Promise.all([
       document.fonts.load(`400 48px "${family}"`, "ایام فاطمیه"),
       document.fonts.load(`600 48px "${family}"`, "موسسه آموزش عالی شاندیز"),
-      document.fonts.load(`800 48px "${family}"`, "نهضت هر شب جمعه")
+      document.fonts.load(`800 48px "${family}"`, "نهضت هر شب جمعه مثل اربعین")
     ]);
     await document.fonts.ready;
     return { ok: Boolean(document.fonts.check?.(`400 48px "${family}"`)), source: "document.fonts" };
