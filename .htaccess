@@ -1,0 +1,28 @@
+# Optional Apache config for shared hosting (cPanel / DirectAdmin).
+# Safe by default: every directive is guarded by IfModule.
+
+<IfModule mod_headers.c>
+  <FilesMatch "^(sw\.js|index\.html|manifest\.json)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </FilesMatch>
+  <FilesMatch "^sw\.js$">
+    Header set Service-Worker-Allowed "/"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_mime.c>
+  AddType font/woff2 .woff2
+  AddType image/svg+xml .svg
+  AddType application/manifest+json .webmanifest
+  <FilesMatch "^manifest\.json$">
+    ForceType application/manifest+json
+  </FilesMatch>
+</IfModule>
+
+# HTTPS is required for Service Workers. If your host does not already redirect,
+# uncomment this block (avoid it with Cloudflare "Flexible" SSL to prevent loops):
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{HTTPS} off
+#   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# </IfModule>
